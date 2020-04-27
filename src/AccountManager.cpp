@@ -1,32 +1,32 @@
 #include "AccountManager.h"
 
-AccountManager::AccountManager()
+PHandler::PHandler()
 {
 	accountExist = true;
 }
 
-AccountManager::~AccountManager()
+PHandler::~PHandler()
 {
-	for (iter = accList.begin(); iter != accList.end(); ++iter)
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
 		delete *iter;
 	}
 }
 
-void AccountManager::CreateAccount()
+void PHandler::CreateAccount()
 {
-	Cclear();
+	ClrScr();
 	cout << string(10, '=') << "CREATE NEW ACCOUNT" << string(10, '=') << endl;
 	cout << "Choose your username: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input1;
 
-	for (iter = accList.begin(); iter != accList.end();)
+	for (iter = AccList.begin(); iter != AccList.end();)
 	{
 
 		if ((*iter)->GetData(USERNAME) == input1)
 		{
-			ErrorHandler(TAKEN_USERNAME);
+			ErrHandler(TAKEN_USERNAME);
 			return;
 		}
 		else
@@ -37,17 +37,17 @@ void AccountManager::CreateAccount()
 	}
 
 	cout << "Choose a password: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input2;
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrorHandler(PASSWORD_LENGTH);
+		ErrHandler(PASSWORD_LENGTH);
 
-		Cclear();
+		ClrScr();
 		cout << "To cancle the account creation, type " << CANCLE << "." << endl;
 		cout << "To continue, choose a valid password." << endl;
-		cout << "> ";
+		cout << "|> ";
 		cin >> input2;
 
 		if (input2 == CANCLE)
@@ -61,27 +61,32 @@ void AccountManager::CreateAccount()
 	}
 
 	Account* account = new Account(input1, input2);
-	accList.push_back(account);
-	Cpause();
+	AccList.push_back(account);
+	ScrFriz();
 }
 
-void AccountManager::Logger()
+void PHandler::Login()
 {
-	Cclear();
+	ClrScr();
 	cout << string(10, '=') << "LOGIN TO YOUR ACCOUNT" << string(10, '=') << endl;
-	cout << "Enter your account's username: " << endl;
-	cout << "> ";
+	cout << "Enter your username: " << endl;
+	cout << "|> ";
 	cin >> input1;
-	cout << "Enter your account's password: " << endl;
-	cout << "> ";
-	cin >> input2;
 
-	for (iter = accList.begin(); iter != accList.end();)
+	for (iter = AccList.begin(); iter != AccList.end();)
 	{
 
-		if ((*iter)->CheckLogin(input1, input2))
+		if ((*iter)->FindAcc(input1))
 		{
-			AccSystem();
+			cout << "Enter your password: " << endl;
+			cout << "|> ";
+			cin >> input2;
+			if ((*iter)->CheckLogin(input2))
+			{
+				AccSystem();
+				return;
+			}
+			ErrHandler(ACCOUNT_NOT_FOUND);
 			return;
 		}
 		else
@@ -91,22 +96,27 @@ void AccountManager::Logger()
 
 	}
 
-	ErrorHandler(ACCOUNT_NOT_FOUND);
+	cout << "Enter your password: " << endl;
+	cout << "|> ";
+	cin >> input2;
+
+	ErrHandler(ACCOUNT_NOT_FOUND);
 }
 
-void AccountManager::AccSystem()
+void PHandler::AccSystem()
 {
 	while (accountExist)
 	{
-		Cclear();
+		ClrScr();
 		cout << "Welcome, " << WelcomeUser() << '!' << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
+		cout << COMMAND_SEND_MESSAGE << " - send a message for another user" << endl;
 		cout << COMMAND_NICKNAME << " - change your nickname settings" << endl;
 		cout << COMMAND_CHANGE_PASSWORD << " - change your account's password" << endl;
 		cout << COMMAND_DISCONNECT << " - disconnect from your account" << endl;
 		cout << COMMAND_DELETE_ACCOUNT << "- permanently delete your account" << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
-		cout << "> ";
+		cout << "|> ";
 		cin >> input1;
 
 		if (input1 == COMMAND_NICKNAME)
@@ -120,16 +130,20 @@ void AccountManager::AccSystem()
 		else if (input1 == COMMAND_DISCONNECT)
 		{
 			cout << "You have disconnected from your account." << endl;
-			Cpause();
+			ScrFriz();
 			return;
 		}
 		else if (input1 == COMMAND_DELETE_ACCOUNT)
 		{
 			DeleteAccount();
 		}
+		else if (input1 == COMMAND_SEND_MESSAGE)
+		{
+			SendMessage();
+		}
 		else
 		{
-			ErrorHandler(INVALID_CHOICE);
+			ErrHandler(INVALID_CHOICE);
 		}
 
 	}
@@ -138,7 +152,7 @@ void AccountManager::AccSystem()
 	return;
 }
 
-const string & AccountManager::WelcomeUser() const
+const string & PHandler::WelcomeUser() const
 {
 	switch ((*iter)->GetCallSetting())
 	{
@@ -149,32 +163,39 @@ const string & AccountManager::WelcomeUser() const
 	}
 }
 
-void AccountManager::ChangePassword()
+void PHandler::SendMessage()
+{
+	cout << "This function is being worked on. Please go to: github.com/NSbuilder/login_system for latest updates" << endl;
+	ScrFriz();
+	return;
+}
+
+void PHandler::ChangePassword()
 {
 	string input3;
-	Cclear();
+	ClrScr();
 	cout << string(10, '-') << "CHANGE PASSWORD" << string(10, '-') << endl;
 	cout << "Enter your existing password: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input1;
 
 	if (input1 != (*iter)->GetData(PASSWORD))
 	{
-		ErrorHandler(WRONG_PASSWORD);
+		ErrHandler(WRONG_PASSWORD);
 		return;
 	}
 
 	cout << "Enter a new password: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input2;
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrorHandler(PASSWORD_LENGTH);
+		ErrHandler(PASSWORD_LENGTH);
 
 		cout << "To leave the password unchanged, type " << CANCLE << "." << endl;
 		cout << "To continue, choose a new valid password." << endl;
-		cout << "> ";
+		cout << "|> ";
 		cin >> input2;
 
 		if (input2 == CANCLE)
@@ -188,25 +209,25 @@ void AccountManager::ChangePassword()
 	}
 
 	cout << "Confirm new password: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input3;
 
 	if (input3 == input2)
 	{
 		(*iter)->SetPassword(input2);
 		cout << "Your password had been updated." << endl;
-		Cpause();
+		ScrFriz();
 	}
 	else
 	{
-		ErrorHandler(106);
+		ErrHandler(106);
 		return;
 	}
 }
 
-void AccountManager::NicknameConfig()
+void PHandler::NicknameConfig()
 {
-	Cclear();
+	ClrScr();
 	cout << string(10, '-') << "NICKNAME SETTINGS" << string(10, '-') << endl;
 
 	if ((*iter)->IsNicknameEmpty())
@@ -221,7 +242,7 @@ void AccountManager::NicknameConfig()
 		else
 		{
 			cout << "Operation cancelled by user. no changes occurred." << endl;
-			Cpause();
+			ScrFriz();
 		}
 	}
 	else
@@ -230,54 +251,54 @@ void AccountManager::NicknameConfig()
 	}
 }
 
-void AccountManager::ChooseNickname()
+void PHandler::ChooseNickname()
 {
 	cout << "Choose your nickname: " << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input1;
 	cout << "Are you SURE you want \"" << input1 << "\" to be your nickname? you can't change it later!" << endl;
 	cout << "Type \"" << CONFIRM << "\" to set your nickname to \"" << input1 << "\" or any other string to cancel." << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input2;
 }
 
-void AccountManager::NicknameControl()
+void PHandler::NicknameControl()
 {
 	uint16_t temp;
-	Cclear();
+	ClrScr();
 	cout << "Hi, " << WelcomeUser() << '!' << endl;
 	cout << "Your nickname is already set." << endl;
 	cout << "Do you want to call you by your name ( default ) or by your nickname?" << endl;
 	cout << "1 - By Name ( Default )" << endl;
 	cout << "2 - By Nickname" << endl;
-	cout << "> ";
+	cout << "|> ";
 
 	CinToInt(temp);
 
 	(*iter)->SetCallSetting(temp);
-	Cpause();
+	ScrFriz();
 }
 
-void AccountManager::DeleteAccount()
+void PHandler::DeleteAccount()
 {
-	Cclear();
+	ClrScr();
 	cout << string(10, '-') << "DELETE ACCOUNT" << string(10, '-') << endl;
 	cout << "Are you sure you want to delete your account + all the data stored in it? It can't be restored!!" << endl;
 	cout << "Type \"" << CONFIRM << "\" to permanently delete your account or any other string to cancel." << endl;
-	cout << "> ";
+	cout << "|> ";
 	cin >> input1;
 
 	if (input1 == CONFIRM)
 	{
 		delete *iter;
-		iter = accList.erase(iter);
+		iter = AccList.erase(iter);
 		accountExist = false;
 		cout << "Your Account had been deleted." << endl;
-		Cpause();
+		ScrFriz();
 	}
 	else
 	{
 		cout << "Account deletion cancelled. no changes occurred." << endl;
-		Cpause();
+		ScrFriz();
 	}
 }

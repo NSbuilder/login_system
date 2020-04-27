@@ -6,7 +6,7 @@
 
 using namespace std;
 
-inline void Cclear()
+inline void ClrScr()
 {
 #ifdef _WIN32
 	system("cls");
@@ -15,7 +15,7 @@ inline void Cclear()
 #endif
 }
 
-inline void Cpause()
+inline void ScrFriz()
 {
 #ifdef _WIN32
 	system("pause");
@@ -32,4 +32,4 @@ enum ErrorType
 	INVALID_CHOICE = 0x101, USERNAME_LENGTH, TAKEN_USERNAME, PASSWORD_LENGTH, ACCOUNT_NOT_FOUND, WRONG_PASSWORD, UNSAVED_NEW_PASSWORD
 };
 
-void ErrorHandler(uint16_t errNumber);
+void ErrHandler(uint16_t errNumber);

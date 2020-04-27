@@ -1,6 +1,7 @@
 #pragma once
+#include <vector>
 #include "Helper.h"
-#include <string>
+#include "Message.h"
 
 enum CallSettings
 {
@@ -19,7 +20,8 @@ public:
 	~Account();
 
 	const string& GetData(DataType ThisDataType);
-	const bool CheckLogin(string& input1, string& input2);
+	const bool FindAcc(string& input1 );
+	const bool CheckLogin(string& input2);
 	const bool IsNicknameEmpty() const;
 	const CallSettings GetCallSetting() const;
 
@@ -32,4 +34,5 @@ private:
 	string m_password;
 	string m_nickname;
 	CallSettings m_callSetting;
+	vector<Message> MessageBox;
 };

@@ -24,16 +24,25 @@ const string& Account::GetData(DataType ThisDataType)
 	}
 }
 
-const bool Account::CheckLogin(string & input1, string & input2)
+const bool Account::FindAcc(string& input1)
 {
-	if (m_username == input1 && m_password == input2)
+	if (m_username == input1)
 	{
 		return true;
 	}
-	else
+	
+	return false;
+}
+
+const bool Account::CheckLogin(string& input2)
+{
+	if (m_password == input2)
 	{
-		return false;
+		return true;
 	}
+	
+	return false;
+
 }
 
 const bool Account::IsNicknameEmpty() const
@@ -69,7 +78,7 @@ void Account::SetCallSetting(uint16_t temp)
 			cout << "You will be called by your nickname." << endl;
 			break;
 		default:
-			ErrorHandler(INVALID_CHOICE);
+			ErrHandler(INVALID_CHOICE);
 			cout << "No changes occurred. you will be called by your name ( Default )." << endl;
 			break;
 	}

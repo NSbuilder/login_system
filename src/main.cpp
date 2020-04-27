@@ -2,42 +2,43 @@
 
 int main()
 {
-	AccountManager* Manager = new AccountManager;
-	bool end = false;
+	PHandler* System = new PHandler;
+	bool terminate = false;
     uint16_t choice;
 
-	while (!end)
+	do
 	{
-		Cclear();
-		cout << string(46, '-') << "MADE BY NSbuilder" << string(46, '-') << endl << endl;
+		ClrScr();
+		cout << string(43, '-') << "MADE BY Noam Sarusi ( NSbuilder )" << string(43, '-') << endl << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "1 - Create new account" << endl;
 		cout << "2 - Login to an existing account" << endl;
 		cout << "3 - Exit" << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
-		cout << "> ";
+		cout << "|> ";
 
 		CinToInt(choice);
 
 		switch (choice)
 		{
 			case 1:
-				Manager->CreateAccount();
+				System->CreateAccount();
 				break;
 			case 2:
-				Manager->Logger();
+				System->Login();
 				break;
 			case 3:
-				end = true;
+				terminate = true;
 				break;
 			default:
-				ErrorHandler(INVALID_CHOICE);
+				ErrHandler(INVALID_CHOICE);
 				break;
 		}
 
-	}
+	} 
+	while (!terminate);
 
-	delete Manager;
+	delete System;
 	return 0;
 
 }

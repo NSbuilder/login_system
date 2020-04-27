@@ -10,12 +10,12 @@ void CinToInt(uint16_t& choice)
 	}
 }
 
-void ErrorHandler(uint16_t errNumber)
+void ErrHandler(uint16_t errSort)
 {
-	Cclear();
+	ClrScr();
 	cout << "##########ERROR##########" << endl;
 
-	switch (errNumber)
+	switch (errSort)
 	{
 		case INVALID_CHOICE:
 			cout << "You made an invalid choice!" << endl;
@@ -30,7 +30,7 @@ void ErrorHandler(uint16_t errNumber)
 			cout << "Your password must be at least 8 characters long and no longer than 32!" << endl;
 			break;
 		case ACCOUNT_NOT_FOUND:
-			cout << "Account was not found! incorrect username or password." << endl;
+			cout << "Incorrect username or password." << endl;
 			break;
 		case WRONG_PASSWORD:
 			cout << "Wrong password!" << endl;
@@ -44,5 +44,5 @@ void ErrorHandler(uint16_t errNumber)
 	}
 
 	cout << "##########ERROR##########" << endl;
-	Cpause();
+	ScrFriz();
 }

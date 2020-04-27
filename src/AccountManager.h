@@ -2,16 +2,17 @@
 #include <list>
 #include "Account.h"
 
-class AccountManager
+class PHandler
 {
 public:
-	AccountManager();
-	~AccountManager();
+	PHandler();
+	~PHandler();
 	void CreateAccount();
-	void Logger();
+	void Login();
 
 	void AccSystem();
 	const string& WelcomeUser() const;
+	void SendMessage();
 	void ChangePassword();
 	void NicknameConfig();
 	void ChooseNickname();
@@ -21,6 +22,7 @@ private:
 	string input1;
 	string input2;
 
+	const string COMMAND_SEND_MESSAGE = "/message";
 	const string COMMAND_CHANGE_PASSWORD = "/changepass";
 	const string COMMAND_NICKNAME = "/nickname";
 	const string COMMAND_DISCONNECT = "/disconnect";
@@ -29,6 +31,6 @@ private:
 	const string CONFIRM = "CONFIRM";
 
 	bool accountExist;
-	list<Account*> accList;
+	list<Account*> AccList;
 	list<Account*>::iterator iter;
 };
