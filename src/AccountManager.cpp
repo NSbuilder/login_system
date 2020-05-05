@@ -2,7 +2,7 @@
 
 PHandler::PHandler()
 {
-	accountExist = true;
+	accExist = true;
 }
 
 PHandler::~PHandler()
@@ -60,8 +60,7 @@ void PHandler::CreateAccount()
 
 	}
 
-	Account* account = new Account(input1, input2);
-	AccList.push_back(account);
+	AccList.push_back(new Account(input1, input2));
 	ScrFriz();
 }
 
@@ -83,7 +82,7 @@ void PHandler::Login()
 			cin >> input2;
 			if ((*iter)->CheckLogin(input2))
 			{
-				AccSystem();
+				AccMenu();
 				return;
 			}
 			ErrHandler(ACCOUNT_NOT_FOUND);
@@ -103,13 +102,14 @@ void PHandler::Login()
 	ErrHandler(ACCOUNT_NOT_FOUND);
 }
 
-void PHandler::AccSystem()
+void PHandler::AccMenu()
 {
-	while (accountExist)
+	while (accExist)
 	{
 		ClrScr();
 		cout << "Welcome, " << WelcomeUser() << '!' << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
+		cout << COMMAND_OPEN_MESSAGEBOX << "- view your messages" << endl;
 		cout << COMMAND_SEND_MESSAGE << " - send a message for another user" << endl;
 		cout << COMMAND_NICKNAME << " - change your nickname settings" << endl;
 		cout << COMMAND_CHANGE_PASSWORD << " - change your account's password" << endl;
@@ -139,7 +139,11 @@ void PHandler::AccSystem()
 		}
 		else if (input1 == COMMAND_SEND_MESSAGE)
 		{
-			SendMessage();
+			SendMsg();
+		}
+		else if (input1 == COMMAND_OPEN_MESSAGEBOX)
+		{
+			OpenMsgBox();
 		}
 		else
 		{
@@ -148,7 +152,7 @@ void PHandler::AccSystem()
 
 	}
 
-	accountExist = true;
+	accExist = true;
 	return;
 }
 
@@ -163,11 +167,89 @@ const string & PHandler::WelcomeUser() const
 	}
 }
 
-void PHandler::SendMessage()
+void PHandler::SendMsg()
 {
-	cout << "This function is being worked on. Please go to: github.com/NSbuilder/login_system for latest updates" << endl;
+	cout << "Which user do you want to send the message? Please write the username percisely" << endl;
+	cout << "|> ";
+	cin >> input1;
+
+	for (auto iter2 = AccList.begin(); iter2 != AccList.end(); ++iter2)
+	{
+		if ((*iter2)->FindAcc(input1))
+		{
+			cout << "Enter messsage topic:" << endl;
+			cout << "|> ";
+
+			cin.clear();
+			cin.ignore(numeric_limits<streamsize>::max(), '\n');
+
+			getline(cin, input1);
+			cout << "Enter messsage:" << endl;
+			cout << "|> ";
+			getline(cin, input2);
+
+			if (!input1.empty() && !input2.empty())
+			{
+				string input3 = (*iter)->GetData(USERNAME);
+				Message tmp(input3, input1, input2);
+				(*iter2)->InsertMessage(tmp);
+				return;
+			}
+
+		}
+	}
+
+	ErrHandler(ACCOUNT_NOT_FOUND);
+	cout << "The user you want to send the message to does not exist." << endl; //Add to errHandler
 	ScrFriz();
-	return;
+}
+
+void PHandler::OpenMsgBox()
+{
+	auto& tmptr = (*iter)->GetMessages();
+
+	if (tmptr.empty())
+	{
+		cout << "No new messages yet :)" << endl;
+		ScrFriz();
+		return;
+	}
+	else
+	{
+
+		cout << "You will now review your messages from the newest to the oldest. Every message you see will get deleted immidiately afterwards." << endl << endl;
+
+		while (tmptr.size())
+		{
+			cout << "-------------------------------------" << endl;
+			cout << "Sender: " << tmptr.top().GetMSender() << endl << endl << endl;
+			cout << "Topic: " << tmptr.top().GetMTopic() << endl << endl << endl;
+			cout << "Message: " << tmptr.top().GetM() << endl << endl << endl;
+			cout << "-------------------------------------" << endl;
+			tmptr.pop();
+
+			cout << "Do you want to continue reviewing your messages? (yes/no)" << endl;
+			cin >> input1;
+
+			if (input1 == "no")
+			{
+				ScrFriz();
+				return;
+			}
+			else if (input1 != "no" && input1 != "yes")
+			{
+				ErrHandler(INVALID_CHOICE);
+				return;
+			}
+
+
+		}
+
+		
+
+
+
+	}
 }
 
 void PHandler::ChangePassword()
@@ -265,7 +347,7 @@ void PHandler::ChooseNickname()
 void PHandler::NicknameControl()
 {
 	uint16_t temp;
-	ClrScr();
+	//ClrScr();
 	cout << "Hi, " << WelcomeUser() << '!' << endl;
 	cout << "Your nickname is already set." << endl;
 	cout << "Do you want to call you by your name ( default ) or by your nickname?" << endl;
@@ -273,7 +355,7 @@ void PHandler::NicknameControl()
 	cout << "2 - By Nickname" << endl;
 	cout << "|> ";
 
-	CinToInt(temp);
+	IntPut(temp);
 
 	(*iter)->SetCallSetting(temp);
 	ScrFriz();
@@ -292,7 +374,7 @@ void PHandler::DeleteAccount()
 	{
 		delete *iter;
 		iter = AccList.erase(iter);
-		accountExist = false;
+		accExist = false;
 		cout << "Your Account had been deleted." << endl;
 		ScrFriz();
 	}

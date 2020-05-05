@@ -21,6 +21,8 @@ const string& Account::GetData(DataType ThisDataType)
 			return m_password;
 		case NICKNAME:
 			return m_nickname;
+		/*default: 
+			return nullptr;*/
 	}
 }
 
@@ -82,4 +84,16 @@ void Account::SetCallSetting(uint16_t temp)
 			cout << "No changes occurred. you will be called by your name ( Default )." << endl;
 			break;
 	}
+}
+
+void Account::InsertMessage(Message& msg)
+{
+	m_MessageBox.push(msg);
+	cout << "Message sent successfully to " + this->m_username + "." << endl;
+	ScrFriz();
+}
+
+stack<Message>& Account::GetMessages()
+{
+	return m_MessageBox;
 }

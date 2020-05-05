@@ -9,19 +9,28 @@ public:
 	~PHandler();
 	void CreateAccount();
 	void Login();
-
-	void AccSystem();
+	void AccMenu();
 	const string& WelcomeUser() const;
-	void SendMessage();
+	void DeleteAccount();
+
+	void SendMsg();
+	void OpenMsgBox();
+
 	void ChangePassword();
+
 	void NicknameConfig();
 	void ChooseNickname();
 	void NicknameControl();
-	void DeleteAccount();
+
 private:
+	bool accExist;
+	list<Account*> AccList;
+	list<Account*>::iterator iter;
+
 	string input1;
 	string input2;
 
+	const string COMMAND_OPEN_MESSAGEBOX = "/messbox";
 	const string COMMAND_SEND_MESSAGE = "/message";
 	const string COMMAND_CHANGE_PASSWORD = "/changepass";
 	const string COMMAND_NICKNAME = "/nickname";
@@ -29,8 +38,4 @@ private:
 	const string COMMAND_DELETE_ACCOUNT = "/deleteacc";
 	const string CANCLE = "CANCLE";
 	const string CONFIRM = "CONFIRM";
-
-	bool accountExist;
-	list<Account*> AccList;
-	list<Account*>::iterator iter;
 };

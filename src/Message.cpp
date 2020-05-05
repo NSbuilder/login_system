@@ -1,9 +1,10 @@
 #include "Message.h"
 
-Message::Message(string& topic, string& message)
+Message::Message(string& sender, string& topic, string& message)
 {
-	topic = topic;
-	message = message;
+	m_sender = sender;
+	m_topic = topic;
+	m_message = message;
 }
 
 Message::~Message()
@@ -11,12 +12,17 @@ Message::~Message()
 
 }
 
+string Message::GetMSender() const
+{
+	return m_sender;
+}
+
 string Message::GetMTopic() const
 {
-	return topic;
+	return m_topic;
 }
 
 string Message::GetM() const
 {
-	return message;
+	return m_message;
 }

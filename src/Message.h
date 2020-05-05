@@ -4,14 +4,14 @@ using namespace std;
 class Message
 {
 public:
-	Message( string& topic, string& message );
+	Message(string& sender, string& topic, string& message);
 	~Message();
+	string GetMSender() const;
 	string GetMTopic() const;
 	string GetM() const;
 private:
-	string topic;
-	string message;
-
-
+	string m_topic;
+	string m_message;
+	string m_sender;
 };
 

@@ -2,9 +2,10 @@
 
 int main()
 {
-	PHandler* System = new PHandler;
-	bool terminate = false;
-    uint16_t choice;
+	bool terminate = false; 
+	PHandler System;
+
+	unsigned short choice;
 
 	do
 	{
@@ -16,16 +17,15 @@ int main()
 		cout << "3 - Exit" << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "|> ";
-
-		CinToInt(choice);
+		IntPut(choice);
 
 		switch (choice)
 		{
 			case 1:
-				System->CreateAccount();
+				System.CreateAccount();
 				break;
 			case 2:
-				System->Login();
+				System.Login();
 				break;
 			case 3:
 				terminate = true;
@@ -38,7 +38,5 @@ int main()
 	} 
 	while (!terminate);
 
-	delete System;
 	return 0;
-
 }

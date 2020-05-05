@@ -1,35 +1,17 @@
 #pragma once
 #include <iostream>
-#include <limits>
-#include <cstdint>
-#include <cstdlib>
 
 using namespace std;
 
-inline void ClrScr()
-{
-#ifdef _WIN32
-	system("cls");
-#else
-	system(clear);
-#endif
-}
+void ClrScr(); // Clear the screen
 
-inline void ScrFriz()
-{
-#ifdef _WIN32
-	system("pause");
-#else
-	cout << "Press enter to continue" << endl;
-	cin.get();
-#endif
-}
+void ScrFriz(); // Wait for input
 
-void CinToInt(uint16_t& choice);
+void IntPut(unsigned short& choice); //Receive input to integer and prevent errors
 
-enum ErrorType
+void ErrHandler(unsigned short errNumber);
+
+enum ErrType
 {
 	INVALID_CHOICE = 0x101, USERNAME_LENGTH, TAKEN_USERNAME, PASSWORD_LENGTH, ACCOUNT_NOT_FOUND, WRONG_PASSWORD, UNSAVED_NEW_PASSWORD
 };
-
-void ErrHandler(uint16_t errNumber);
