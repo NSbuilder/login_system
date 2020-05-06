@@ -104,6 +104,7 @@ void PHandler::Login()
 
 void PHandler::AccMenu()
 {
+	auto& tmptr = (*iter)->GetMessages();
 	while (accExist)
 	{
 		ClrScr();
@@ -116,7 +117,15 @@ void PHandler::AccMenu()
 		cout << COMMAND_DISCONNECT << " - disconnect from your account" << endl;
 		cout << COMMAND_DELETE_ACCOUNT << "- permanently delete your account" << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
+
+		if (!tmptr.empty())
+		{
+			cout << string(20, ' ') << "*You have new messages*" << endl << endl;
+		}
+
 		cout << "|> ";
+
+
 		cin >> input1;
 
 		if (input1 == COMMAND_NICKNAME)
@@ -143,7 +152,7 @@ void PHandler::AccMenu()
 		}
 		else if (input1 == COMMAND_OPEN_MESSAGEBOX)
 		{
-			OpenMsgBox();
+			OpenMsgBox(tmptr);
 		}
 		else
 		{
@@ -180,7 +189,7 @@ void PHandler::SendMsg()
 			cout << "Enter messsage topic:" << endl;
 			cout << "|> ";
 
-			cin.clear();
+			//cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 			getline(cin, input1);
@@ -204,52 +213,40 @@ void PHandler::SendMsg()
 	ScrFriz();
 }
 
-void PHandler::OpenMsgBox()
+void PHandler::OpenMsgBox(stack<Message>& tmptr)
 {
-	auto& tmptr = (*iter)->GetMessages();
-
-	if (tmptr.empty())
+	do
 	{
-		cout << "No new messages yet :)" << endl;
-		ScrFriz();
-		return;
-	}
-	else
-	{
+		if (tmptr.empty())
+		{
+			cout << "No new messages :)" << endl;
+			ScrFriz();
+			return;
+		}
 
 		cout << "You will now review your messages from the newest to the oldest. Every message you see will get deleted immidiately afterwards." << endl << endl;
 
-		while (tmptr.size())
+		cout << "-------------------------------------" << endl;
+		cout << "Sender: " << tmptr.top().GetMSender() << endl << endl << endl;
+		cout << "Topic: " << tmptr.top().GetMTopic() << endl << endl << endl;
+		cout << "Message: " << tmptr.top().GetM() << endl << endl << endl;
+		cout << "-------------------------------------" << endl;
+		tmptr.pop();
+
+		cout << "Do you want to continue reviewing your messages? (yes/no)" << endl;
+		cin >> input1;
+
+		if (input1 == "no")
 		{
-			cout << "-------------------------------------" << endl;
-			cout << "Sender: " << tmptr.top().GetMSender() << endl << endl << endl;
-			cout << "Topic: " << tmptr.top().GetMTopic() << endl << endl << endl;
-			cout << "Message: " << tmptr.top().GetM() << endl << endl << endl;
-			cout << "-------------------------------------" << endl;
-			tmptr.pop();
-
-			cout << "Do you want to continue reviewing your messages? (yes/no)" << endl;
-			cin >> input1;
-
-			if (input1 == "no")
-			{
-				ScrFriz();
-				return;
-			}
-			else if (input1 != "no" && input1 != "yes")
-			{
-				ErrHandler(INVALID_CHOICE);
-				return;
-			}
-
-
+			ScrFriz();
+			return;
 		}
-
-		
-
-
-
-	}
+		else if (input1 != "no" && input1 != "yes")
+		{
+			ErrHandler(INVALID_CHOICE);
+			return;
+		}
+	} while (true);
 }
 
 void PHandler::ChangePassword()

@@ -14,7 +14,7 @@ public:
 	void DeleteAccount();
 
 	void SendMsg();
-	void OpenMsgBox();
+	void OpenMsgBox(stack<Message>& tmptr);
 
 	void ChangePassword();
 
