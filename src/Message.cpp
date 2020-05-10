@@ -9,7 +9,6 @@ Message::Message(string& sender, string& topic, string& message)
 
 Message::~Message()
 {
-
 }
 
 string Message::GetMSender() const

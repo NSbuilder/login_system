@@ -7,10 +7,6 @@ PHandler::PHandler()
 
 PHandler::~PHandler()
 {
-	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
-	{
-		delete *iter;
-	}
 }
 
 void PHandler::CreateAccount()
@@ -21,19 +17,13 @@ void PHandler::CreateAccount()
 	cout << "|> ";
 	cin >> input1;
 
-	for (iter = AccList.begin(); iter != AccList.end();)
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
-
-		if ((*iter)->GetData(USERNAME) == input1)
+		if (iter->GetData(USERNAME) == input1)
 		{
 			ErrHandler(TAKEN_USERNAME);
 			return;
 		}
-		else
-		{
-			++iter;
-		}
-
 	}
 
 	cout << "Choose a password: " << endl;
@@ -60,7 +50,7 @@ void PHandler::CreateAccount()
 
 	}
 
-	AccList.push_back(new Account(input1, input2));
+	AccList.push_front(Account(input1, input2));
 	ScrFriz();
 }
 
@@ -71,27 +61,28 @@ void PHandler::Login()
 	cout << "Enter your username: " << endl;
 	cout << "|> ";
 	cin >> input1;
+	prevIter = AccList.before_begin();
 
-	for (iter = AccList.begin(); iter != AccList.end();)
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
 
-		if ((*iter)->FindAcc(input1))
+		if (iter->FindAcc(input1))
 		{
 			cout << "Enter your password: " << endl;
 			cout << "|> ";
 			cin >> input2;
-			if ((*iter)->CheckLogin(input2))
+
+			if (iter->CheckLogin(input2))
 			{
 				AccMenu();
 				return;
 			}
+
 			ErrHandler(ACCOUNT_NOT_FOUND);
 			return;
 		}
-		else
-		{
-			++iter;
-		}
+
+		prevIter++;
 
 	}
 
@@ -104,7 +95,7 @@ void PHandler::Login()
 
 void PHandler::AccMenu()
 {
-	auto& tmptr = (*iter)->GetMessages();
+	auto& tmptr = iter->GetMessages();
 	while (accExist)
 	{
 		ClrScr();
@@ -167,12 +158,12 @@ void PHandler::AccMenu()
 
 const string & PHandler::WelcomeUser() const
 {
-	switch ((*iter)->GetCallSetting())
+	switch (iter->GetCallSetting())
 	{
 		default: case BY_USERNAME:
-			return (*iter)->GetData(USERNAME);
+			return iter->GetData(USERNAME);
 		case BY_NICKNAME:
-			return (*iter)->GetData(NICKNAME);
+			return iter->GetData(NICKNAME);
 	}
 }
 
@@ -184,12 +175,11 @@ void PHandler::SendMsg()
 
 	for (auto iter2 = AccList.begin(); iter2 != AccList.end(); ++iter2)
 	{
-		if ((*iter2)->FindAcc(input1))
+		if (iter2->FindAcc(input1))
 		{
 			cout << "Enter messsage topic:" << endl;
 			cout << "|> ";
 
-			//cin.clear();
 			cin.ignore(numeric_limits<streamsize>::max(), '\n');
 
 			getline(cin, input1);
@@ -199,9 +189,9 @@ void PHandler::SendMsg()
 
 			if (!input1.empty() && !input2.empty())
 			{
-				string input3 = (*iter)->GetData(USERNAME);
+				string input3 = iter->GetData(USERNAME);
 				Message tmp(input3, input1, input2);
-				(*iter2)->InsertMessage(tmp);
+				iter2->InsertMessage(tmp);
 				return;
 			}
 
@@ -258,7 +248,7 @@ void PHandler::ChangePassword()
 	cout << "|> ";
 	cin >> input1;
 
-	if (input1 != (*iter)->GetData(PASSWORD))
+	if (input1 != iter->GetData(PASSWORD))
 	{
 		ErrHandler(WRONG_PASSWORD);
 		return;
@@ -293,7 +283,7 @@ void PHandler::ChangePassword()
 
 	if (input3 == input2)
 	{
-		(*iter)->SetPassword(input2);
+		iter->SetPassword(input2);
 		cout << "Your password had been updated." << endl;
 		ScrFriz();
 	}
@@ -309,13 +299,13 @@ void PHandler::NicknameConfig()
 	ClrScr();
 	cout << string(10, '-') << "NICKNAME SETTINGS" << string(10, '-') << endl;
 
-	if ((*iter)->IsNicknameEmpty())
+	if (iter->IsNicknameEmpty())
 	{
 		ChooseNickname();
 
 		if (input2 == CONFIRM)
 		{
-			(*iter)->SetNickname(input1);
+			iter->SetNickname(input1);
 			NicknameControl();
 		}
 		else
@@ -354,7 +344,7 @@ void PHandler::NicknameControl()
 
 	IntPut(temp);
 
-	(*iter)->SetCallSetting(temp);
+	iter->SetCallSetting(temp);
 	ScrFriz();
 }
 
@@ -369,8 +359,7 @@ void PHandler::DeleteAccount()
 
 	if (input1 == CONFIRM)
 	{
-		delete *iter;
-		iter = AccList.erase(iter);
+		AccList.erase_after(prevIter);
 		accExist = false;
 		cout << "Your Account had been deleted." << endl;
 		ScrFriz();

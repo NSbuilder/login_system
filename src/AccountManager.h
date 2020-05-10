@@ -1,5 +1,5 @@
 #pragma once
-#include <list>
+#include <forward_list>
 #include "Account.h"
 
 class PHandler
@@ -24,8 +24,9 @@ public:
 
 private:
 	bool accExist;
-	list<Account*> AccList;
-	list<Account*>::iterator iter;
+	forward_list<Account> AccList;
+	forward_list<Account>::iterator iter;
+	forward_list<Account>::iterator prevIter;
 
 	string input1;
 	string input2;

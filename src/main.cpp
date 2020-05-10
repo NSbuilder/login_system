@@ -2,11 +2,10 @@
 
 int main()
 {
-	bool terminate = false; 
-	PHandler System;
-
+	bool terminate = false;
 	unsigned short choice;
-
+	PHandler System;
+	
 	do
 	{
 		ClrScr();
