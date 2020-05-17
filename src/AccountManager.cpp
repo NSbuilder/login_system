@@ -9,6 +9,14 @@ PHandler::~PHandler()
 {
 }
 
+void PHandler::About()
+{
+	ClrScr();
+	cout << string(10, '-') << endl << endl << "This program was made by Noam Sarusi ( NSbuilder )" << endl << endl;
+	cout << string(10, '-') << endl << endl << "To stay updated, head to: github.com/NSbuilder/login_system" << endl << endl;
+	ScrFriz();
+}
+
 void PHandler::CreateAccount()
 {
 	ClrScr();
@@ -19,9 +27,9 @@ void PHandler::CreateAccount()
 
 	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
-		if (iter->GetData(USERNAME) == input1)
+		if (iter->GetData(DataType::USERNAME) == input1)
 		{
-			ErrHandler(TAKEN_USERNAME);
+			ErrHandler(ErrType::TAKEN_USERNAME);
 			return;
 		}
 	}
@@ -32,7 +40,7 @@ void PHandler::CreateAccount()
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrHandler(PASSWORD_LENGTH);
+		ErrHandler(ErrType::PASSWORD_LENGTH);
 
 		ClrScr();
 		cout << "To cancle the account creation, type " << CANCLE << "." << endl;
@@ -78,7 +86,7 @@ void PHandler::Login()
 				return;
 			}
 
-			ErrHandler(ACCOUNT_NOT_FOUND);
+			ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
 			return;
 		}
 
@@ -90,7 +98,7 @@ void PHandler::Login()
 	cout << "|> ";
 	cin >> input2;
 
-	ErrHandler(ACCOUNT_NOT_FOUND);
+	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
 }
 
 void PHandler::AccMenu()
@@ -101,10 +109,10 @@ void PHandler::AccMenu()
 		ClrScr();
 		cout << "Welcome, " << WelcomeUser() << '!' << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
-		cout << COMMAND_OPEN_MESSAGEBOX << "- view your messages" << endl;
-		cout << COMMAND_SEND_MESSAGE << " - send a message for another user" << endl;
-		cout << COMMAND_NICKNAME << " - change your nickname settings" << endl;
-		cout << COMMAND_CHANGE_PASSWORD << " - change your account's password" << endl;
+		cout << COMMAND_OPEN_MSGBOX << "- view your messages" << endl;
+		cout << COMMAND_SEND_MSG << " - send a message for another user" << endl;
+		cout << COMMAND_NICK << " - change your nickname settings" << endl;
+		cout << COMMAND_CHANGE_PASS << " - change your account's password" << endl;
 		cout << COMMAND_DISCONNECT << " - disconnect from your account" << endl;
 		cout << COMMAND_DELETE_ACCOUNT << "- permanently delete your account" << endl;
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
@@ -115,15 +123,13 @@ void PHandler::AccMenu()
 		}
 
 		cout << "|> ";
-
-
 		cin >> input1;
 
-		if (input1 == COMMAND_NICKNAME)
+		if (input1 == COMMAND_NICK)
 		{
 			NicknameConfig();
 		}
-		else if (input1 == COMMAND_CHANGE_PASSWORD)
+		else if (input1 == COMMAND_CHANGE_PASS)
 		{
 			ChangePassword();
 		}
@@ -137,17 +143,17 @@ void PHandler::AccMenu()
 		{
 			DeleteAccount();
 		}
-		else if (input1 == COMMAND_SEND_MESSAGE)
+		else if (input1 == COMMAND_SEND_MSG)
 		{
 			SendMsg();
 		}
-		else if (input1 == COMMAND_OPEN_MESSAGEBOX)
+		else if (input1 == COMMAND_OPEN_MSGBOX)
 		{
 			OpenMsgBox(tmptr);
 		}
 		else
 		{
-			ErrHandler(INVALID_CHOICE);
+			ErrHandler(ErrType::INVALID_CHOICE);
 		}
 
 	}
@@ -160,10 +166,10 @@ const string & PHandler::WelcomeUser() const
 {
 	switch (iter->GetCallSetting())
 	{
-		default: case BY_USERNAME:
-			return iter->GetData(USERNAME);
-		case BY_NICKNAME:
-			return iter->GetData(NICKNAME);
+		default: case CallSettings::BY_USERNAME:
+			return iter->GetData(DataType::USERNAME);
+		case CallSettings::BY_NICKNAME:
+			return iter->GetData(DataType::NICKNAME);
 	}
 }
 
@@ -189,7 +195,7 @@ void PHandler::SendMsg()
 
 			if (!input1.empty() && !input2.empty())
 			{
-				string input3 = iter->GetData(USERNAME);
+				string input3 = iter->GetData(DataType::USERNAME);
 				Message tmp(input3, input1, input2);
 				iter2->InsertMessage(tmp);
 				return;
@@ -198,7 +204,7 @@ void PHandler::SendMsg()
 		}
 	}
 
-	ErrHandler(ACCOUNT_NOT_FOUND);
+	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
 	cout << "The user you want to send the message to does not exist." << endl; //Add to errHandler
 	ScrFriz();
 }
@@ -233,7 +239,7 @@ void PHandler::OpenMsgBox(stack<Message>& tmptr)
 		}
 		else if (input1 != "no" && input1 != "yes")
 		{
-			ErrHandler(INVALID_CHOICE);
+			ErrHandler(ErrType::INVALID_CHOICE);
 			return;
 		}
 	} while (true);
@@ -248,9 +254,9 @@ void PHandler::ChangePassword()
 	cout << "|> ";
 	cin >> input1;
 
-	if (input1 != iter->GetData(PASSWORD))
+	if (input1 != iter->GetData(DataType::PASSWORD))
 	{
-		ErrHandler(WRONG_PASSWORD);
+		ErrHandler(ErrType::WRONG_PASSWORD);
 		return;
 	}
 
@@ -260,7 +266,7 @@ void PHandler::ChangePassword()
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrHandler(PASSWORD_LENGTH);
+		ErrHandler(ErrType::PASSWORD_LENGTH);
 
 		cout << "To leave the password unchanged, type " << CANCLE << "." << endl;
 		cout << "To continue, choose a new valid password." << endl;
@@ -289,7 +295,7 @@ void PHandler::ChangePassword()
 	}
 	else
 	{
-		ErrHandler(106);
+		ErrHandler(ErrType::WRONG_PASSWORD);
 		return;
 	}
 }
@@ -301,7 +307,13 @@ void PHandler::NicknameConfig()
 
 	if (iter->IsNicknameEmpty())
 	{
-		ChooseNickname();
+		cout << "Choose your nickname: " << endl;
+		cout << "|> ";
+		cin >> input1;
+		cout << "Are you SURE you want \"" << input1 << "\" to be your nickname? you can't change it later!" << endl;
+		cout << "Type \"" << CONFIRM << "\" to set your nickname to \"" << input1 << "\" or any other string to cancel." << endl;
+		cout << "|> ";
+		cin >> input2;
 
 		if (input2 == CONFIRM)
 		{
@@ -320,21 +332,9 @@ void PHandler::NicknameConfig()
 	}
 }
 
-void PHandler::ChooseNickname()
-{
-	cout << "Choose your nickname: " << endl;
-	cout << "|> ";
-	cin >> input1;
-	cout << "Are you SURE you want \"" << input1 << "\" to be your nickname? you can't change it later!" << endl;
-	cout << "Type \"" << CONFIRM << "\" to set your nickname to \"" << input1 << "\" or any other string to cancel." << endl;
-	cout << "|> ";
-	cin >> input2;
-}
-
 void PHandler::NicknameControl()
 {
-	uint16_t temp;
-	//ClrScr();
+	unsigned short temp;
 	cout << "Hi, " << WelcomeUser() << '!' << endl;
 	cout << "Your nickname is already set." << endl;
 	cout << "Do you want to call you by your name ( default ) or by your nickname?" << endl;
@@ -344,7 +344,15 @@ void PHandler::NicknameControl()
 
 	IntPut(temp);
 
-	iter->SetCallSetting(temp);
+	if (temp == 1)
+	{
+		iter->SetCallSetting(CallSettings::BY_USERNAME);
+	}
+	else
+	{
+		iter->SetCallSetting(CallSettings::BY_NICKNAME);
+	}
+
 	ScrFriz();
 }
 

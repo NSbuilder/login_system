@@ -4,25 +4,23 @@ Account::Account(string& input1, string& input2)
 {
 	m_username = input1;
 	m_password = input2;
-	m_callSetting = BY_USERNAME;
+	m_callSetting = CallSettings::BY_USERNAME;
 }
 
 Account::~Account()
 {
 }
 
-const string& Account::GetData(DataType ThisDataType)
+const string& Account::GetData(DataType ThisDataType) const
 {
 	switch (ThisDataType)
 	{
-		case USERNAME:
+	default:case DataType::USERNAME: //
 			return m_username;
-		case PASSWORD:
+		case DataType::PASSWORD:
 			return m_password;
-		case NICKNAME:
+		case DataType::NICKNAME:
 			return m_nickname;
-		/*default: 
-			return nullptr;*/
 	}
 }
 
@@ -67,20 +65,20 @@ void Account::SetNickname(string & input1)
 	m_nickname = input1;
 }
 
-void Account::SetCallSetting(uint16_t temp)
+void Account::SetCallSetting(CallSettings temp)
 {
 	switch (temp)
 	{
-		case BY_USERNAME:
-			m_callSetting = BY_USERNAME;
+		case CallSettings::BY_USERNAME:
+			m_callSetting = CallSettings::BY_USERNAME;
 			cout << "You will be called by your name." << endl;
 			break;
-		case BY_NICKNAME:
-			m_callSetting = BY_NICKNAME;
+		case CallSettings::BY_NICKNAME:
+			m_callSetting = CallSettings::BY_NICKNAME;
 			cout << "You will be called by your nickname." << endl;
 			break;
 		default:
-			ErrHandler(INVALID_CHOICE);
+			ErrHandler(ErrType::INVALID_CHOICE);
 			cout << "No changes occurred. you will be called by your name ( Default )." << endl;
 			break;
 	}

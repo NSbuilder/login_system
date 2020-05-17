@@ -13,7 +13,8 @@ int main()
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "1 - Create new account" << endl;
 		cout << "2 - Login to an existing account" << endl;
-		cout << "3 - Exit" << endl;
+		cout << "3 - About" << endl;
+		cout << "4 - Exit" << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "|> ";
 		IntPut(choice);
@@ -27,10 +28,13 @@ int main()
 				System.Login();
 				break;
 			case 3:
+				System.About();
+				break;
+			case 4:
 				terminate = true;
 				break;
 			default:
-				ErrHandler(INVALID_CHOICE);
+				ErrHandler(ErrType::INVALID_CHOICE);
 				break;
 		}
 

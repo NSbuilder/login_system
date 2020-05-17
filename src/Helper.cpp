@@ -29,36 +29,35 @@ void IntPut(unsigned short& choice)
 	}
 }
 
-void ErrHandler(unsigned short errSort)
+void ErrHandler(ErrType errSort)
 {
 	ClrScr();
 	cerr << "##########ERROR##########" << endl;
 
 	switch (errSort)
 	{
-		case INVALID_CHOICE:
+		case ErrType::INVALID_CHOICE:
 			cerr << "You made an invalid choice!" << endl;
 			break;
-		case USERNAME_LENGTH:
+		case ErrType::USERNAME_LENGTH:
 			cerr << "Your username must be at least 5 characters long and no longer than 20!" << endl;
 			break;
-		case TAKEN_USERNAME:
+		case ErrType::TAKEN_USERNAME:
 			cerr << "This username is already taken!" << endl;
 			break;
-		case PASSWORD_LENGTH:
+		case ErrType::PASSWORD_LENGTH:
 			cerr << "Your password must be at least 8 characters long and no longer than 32!" << endl;
 			break;
-		case ACCOUNT_NOT_FOUND:
+		case ErrType::ACCOUNT_NOT_FOUND:
 			cerr << "Incorrect username or password." << endl;
 			break;
-		case WRONG_PASSWORD:
+		case ErrType::WRONG_PASSWORD:
 			cerr << "Wrong password!" << endl;
 			break;
-		case UNSAVED_NEW_PASSWORD:
+		case ErrType::UNSAVED_NEW_PASSWORD:
 			cerr << "Can't save new password because new password and conform password does not match!" << endl;
 			break;
 		default:
-			cerr << "UNKNOW ERROR!!!" << endl;
 			break;
 	}
 
