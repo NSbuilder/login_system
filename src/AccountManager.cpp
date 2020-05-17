@@ -162,7 +162,7 @@ void PHandler::AccMenu()
 	return;
 }
 
-const string & PHandler::WelcomeUser() const
+string_view PHandler::WelcomeUser() const
 {
 	switch (iter->GetCallSetting())
 	{
@@ -195,7 +195,7 @@ void PHandler::SendMsg()
 
 			if (!input1.empty() && !input2.empty())
 			{
-				string input3 = iter->GetData(DataType::USERNAME);
+				string_view input3 { iter->GetData(DataType::USERNAME) };
 				Message tmp(input3, input1, input2);
 				iter2->InsertMessage(tmp);
 				return;

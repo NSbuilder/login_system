@@ -1,6 +1,6 @@
 #include "Account.h"
 
-Account::Account(string& input1, string& input2)
+Account::Account(string_view input1, string_view input2)
 {
 	m_username = input1;
 	m_password = input2;
@@ -11,7 +11,7 @@ Account::~Account()
 {
 }
 
-const string& Account::GetData(DataType ThisDataType) const
+const string_view Account::GetData(DataType ThisDataType) const
 {
 	switch (ThisDataType)
 	{
@@ -24,7 +24,7 @@ const string& Account::GetData(DataType ThisDataType) const
 	}
 }
 
-const bool Account::FindAcc(string& input1)
+const bool Account::FindAcc(string_view input1) const
 {
 	if (m_username == input1)
 	{
@@ -34,7 +34,7 @@ const bool Account::FindAcc(string& input1)
 	return false;
 }
 
-const bool Account::CheckLogin(string& input2)
+const bool Account::CheckLogin(string_view input2) const
 {
 	if (m_password == input2)
 	{
@@ -55,12 +55,12 @@ const CallSettings Account::GetCallSetting() const
 	return m_callSetting;
 }
 
-void Account::SetPassword(string & input2)
+void Account::SetPassword(string_view input2)
 {
 	m_password = input2;
 }
 
-void Account::SetNickname(string & input1)
+void Account::SetNickname(string_view input1)
 {
 	m_nickname = input1;
 }

@@ -16,17 +16,17 @@ enum class DataType
 class Account
 {
 public:
-	Account(string& input1, string& input2);
+	Account(string_view input1, string_view input2);
 	~Account();
 
-	const string& GetData(DataType ThisDataType) const;
-	const bool FindAcc(string& input1);
-	const bool CheckLogin(string& input2);
+	const string_view GetData(DataType ThisDataType) const;
+	const bool FindAcc(string_view input1) const;
+	const bool CheckLogin(string_view input2) const;
 	const bool IsNicknameEmpty() const;
 	const CallSettings GetCallSetting() const;
 
-	void SetPassword(string& input2);
-	void SetNickname(string& input1);
+	void SetPassword(string_view input2);
+	void SetNickname(string_view input1);
 	void SetCallSetting(CallSettings temp);
 	void InsertMessage(Message& msg);
 

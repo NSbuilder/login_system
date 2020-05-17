@@ -17,6 +17,7 @@ int main()
 		cout << "4 - Exit" << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "|> ";
+
 		IntPut(choice);
 
 		switch (choice)
