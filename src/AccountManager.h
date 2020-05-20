@@ -13,13 +13,15 @@ public:
 	void CreateAccount();
 	void Login();
 	void AccMenu();
-	string_view WelcomeUser() const;
+	const string_view WelcomeUser() const;
 
 	void NicknameConfig();
 	void NicknameControl();
 
 	void SendMsg();
-	void OpenMsgBox(stack<Message>& tmptr);
+	void OpenMsgBox(queue<Message>& tmptr);
+	
+	//void GlobalChat();
 
 	void ChangePassword();
 	void DeleteAccount();
@@ -30,6 +32,8 @@ private:
 	forward_list<Account> AccList;
 	forward_list<Account>::iterator iter;
 	forward_list<Account>::iterator prevIter;
+
+	//queue<Message> Gchat;
 
 	string input1;
 	string input2;
