@@ -1,5 +1,5 @@
 #pragma once
-#include <queue>
+#include <stack>
 #include "Helper.h"
 #include "Message.h"
 
@@ -30,10 +30,10 @@ public:
 	void SetCallSetting(CallSettings temp);
 	void InsertMessage(Message& msg);
 
-	queue<Message>& GetMessages();
+	stack<Message>& GetMessages();
 
 private:
-	queue<Message> m_MessageBox;
+	stack<Message> m_MessageBox;
 	string m_username;
 	string m_password;
 	string m_nickname;

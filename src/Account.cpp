@@ -91,7 +91,7 @@ void Account::InsertMessage(Message& msg)
 	ScrFriz();
 }
 
-queue<Message>& Account::GetMessages()
+stack<Message>& Account::GetMessages()
 {
 	return m_MessageBox;
 }

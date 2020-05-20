@@ -162,7 +162,7 @@ void PHandler::AccMenu()
 	return;
 }
 
-const string_view PHandler::WelcomeUser() const
+string_view PHandler::WelcomeUser() const
 {
 	switch (iter->GetCallSetting())
 	{
@@ -209,7 +209,7 @@ void PHandler::SendMsg()
 	ScrFriz();
 }
 
-void PHandler::OpenMsgBox(queue<Message>& tmptr)
+void PHandler::OpenMsgBox(stack<Message>& tmptr)
 {
 	do
 	{
@@ -220,21 +220,14 @@ void PHandler::OpenMsgBox(queue<Message>& tmptr)
 			return;
 		}
 
-		cout << "You will now review your messages from the oldest to the newest. Every message you see will get deleted immidiately afterwards." << endl << endl;
+		cout << "You will now review your messages from the newest to the oldest. Every message you see will get deleted immidiately afterwards." << endl << endl;
 
 		cout << "-------------------------------------" << endl;
-		cout << "Sender: " << tmptr.front().GetMSender() << endl << endl << endl;
-		cout << "Topic: " << tmptr.front().GetMTopic() << endl << endl << endl;
-		cout << "Message: " << tmptr.front().GetM() << endl << endl << endl;
+		cout << "Sender: " << tmptr.top().GetMSender() << endl << endl << endl;
+		cout << "Topic: " << tmptr.top().GetMTopic() << endl << endl << endl;
+		cout << "Message: " << tmptr.top().GetM() << endl << endl << endl;
 		cout << "-------------------------------------" << endl;
 		tmptr.pop();
-
-		if (tmptr.empty())
-		{
-			cout << "No new messages :)" << endl;
-			ScrFriz();
-			return;
-		}
 
 		cout << "Do you want to continue reviewing your messages? (yes/no)" << endl;
 		cin >> input1;
