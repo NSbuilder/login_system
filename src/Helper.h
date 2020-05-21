@@ -1,5 +1,7 @@
 #pragma once
 #include <iostream>
+#include <string>
+
 
 using namespace std;
 
@@ -8,6 +10,8 @@ void ClrScr(); // Clear the screen
 void ScrFriz(); // Wait for input
 
 void IntPut(unsigned short& choice); //Receive input to integer and prevent errors
+
+void InputWithSpaces(string& input);
 
 enum class ErrType
 {

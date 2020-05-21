@@ -29,6 +29,12 @@ void IntPut(unsigned short& choice)
 	}
 }
 
+void InputWithSpaces(string& input)
+{
+	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	getline(cin, input);
+}
+
 void ErrHandler(ErrType errSort)
 {
 	ClrScr();

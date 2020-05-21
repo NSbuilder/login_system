@@ -3,6 +3,7 @@
 PHandler::PHandler()
 {
 	accExist = true;
+	Gchat.reserve(50);
 }
 
 PHandler::~PHandler()
@@ -111,6 +112,7 @@ void PHandler::AccMenu()
 		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
 		cout << COMMAND_OPEN_MSGBOX << "- view your messages" << endl;
 		cout << COMMAND_SEND_MSG << " - send a message for another user" << endl;
+		cout << COMMAND_GCHAT << " - open global chat" << endl;
 		cout << COMMAND_NICK << " - change your nickname settings" << endl;
 		cout << COMMAND_CHANGE_PASS << " - change your account's password" << endl;
 		cout << COMMAND_DISCONNECT << " - disconnect from your account" << endl;
@@ -150,6 +152,10 @@ void PHandler::AccMenu()
 		else if (input1 == COMMAND_OPEN_MSGBOX)
 		{
 			OpenMsgBox(tmptr);
+		}
+		else if (input1 == COMMAND_GCHAT)
+		{
+			GlobalChat();
 		}
 		else
 		{
@@ -196,7 +202,7 @@ void PHandler::SendMsg()
 			if (!input1.empty() && !input2.empty())
 			{
 				string_view input3 { iter->GetData(DataType::USERNAME) };
-				Message tmp(input3, input1, input2);
+				Message tmp(input3, input2, input1);
 				iter2->InsertMessage(tmp);
 				return;
 			}
@@ -249,6 +255,41 @@ void PHandler::OpenMsgBox(queue<Message>& tmptr)
 			ErrHandler(ErrType::INVALID_CHOICE);
 			return;
 		}
+	} while (true);
+}
+
+void PHandler::GlobalChat()
+{
+	do
+	{
+		for (auto& tmpItr : Gchat)
+		{
+			cout << tmpItr.GetMSender() << ": " << tmpItr.GetM() << endl << endl;
+		}
+
+		if (Gchat.size() == 50)
+		{
+			Gchat.erase(Gchat.begin());
+		}
+
+
+		cout << "Enter message:" << endl;
+		InputWithSpaces(input1);
+		cout << input1;
+
+		Gchat.push_back(Message(iter->GetData(DataType::USERNAME), input1));
+
+		cout << "Message sent successfuly to the global chat" << endl;
+		ScrFriz();
+		string input4;
+		cout << "Exit global chat? (yes/no): ";
+		cin >> input4;
+
+		if ((input4) != "yes")
+		{
+			return;
+		}
+
 	} while (true);
 }
 

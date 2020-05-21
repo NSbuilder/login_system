@@ -1,10 +1,11 @@
 #include "Message.h"
 
-Message::Message(string_view sender, string_view topic, string_view message)
+Message::Message(string_view sender, string_view message, string_view topic)
 {
 	m_sender = sender;
-	m_topic = topic;
 	m_message = message;
+	m_topic = topic;
+	
 }
 
 Message::~Message()
