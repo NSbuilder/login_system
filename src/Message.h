@@ -1,4 +1,5 @@
 #pragma once
+#include <string>
 #include <string_view>
 
 using namespace std;
@@ -16,4 +17,3 @@ private:
 	string m_message;
 	string m_sender;
 };
-

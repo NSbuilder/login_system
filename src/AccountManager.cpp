@@ -3,7 +3,7 @@
 PHandler::PHandler()
 {
 	accExist = true;
-	Gchat.reserve(50);
+	Gchat.reserve(51);
 }
 
 PHandler::~PHandler()
@@ -28,7 +28,7 @@ void PHandler::CreateAccount()
 
 	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
-		if (iter->GetData(DataType::USERNAME) == input1)
+		if ((*iter)->GetData(DataType::USERNAME) == input1)
 		{
 			ErrHandler(ErrType::TAKEN_USERNAME);
 			return;
@@ -58,9 +58,37 @@ void PHandler::CreateAccount()
 		continue;
 
 	}
+	
+	string input3;
 
-	AccList.push_front(Account(input1, input2));
-	ScrFriz();
+	ClrScr();
+	cout << "Do you want this account to be an admin? (yes/no) " << endl;
+	cin >> input3;
+
+	if (input3 != "yes" && input3 != "no")
+	{
+		ErrHandler(ErrType::INVALID_CHOICE);
+		return;
+	}
+	else if (input3 != "yes")
+	{
+		AccList.push_front(make_unique<Account>(input1, input2));
+		ScrFriz();
+	}
+	else
+	{
+		if (Admin::HowManyAdmins())
+		{
+			cout << "It is currently possible to create only 1 admin account." << endl;
+			cout << "A regular account will be created." << endl;
+			AccList.push_front(make_unique<Account>(input1, input2));
+		}
+		else
+		{
+			AccList.push_front(make_unique<Admin>(input1, input2));
+			ScrFriz();
+		}
+	}
 }
 
 void PHandler::Login()
@@ -75,13 +103,13 @@ void PHandler::Login()
 	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
 
-		if (iter->FindAcc(input1))
+		if ((*iter)->FindAcc(input1))
 		{
 			cout << "Enter your password: " << endl;
 			cout << "|> ";
 			cin >> input2;
 
-			if (iter->CheckLogin(input2))
+			if ((*iter)->CheckLogin(input2))
 			{
 				AccMenu();
 				return;
@@ -104,20 +132,32 @@ void PHandler::Login()
 
 void PHandler::AccMenu()
 {
-	auto& tmptr = iter->GetMessages();
+	auto& tmptr = (*iter)->GetMessages();
 	while (accExist)
 	{
 		ClrScr();
-		cout << "Welcome, " << WelcomeUser() << '!' << endl;
-		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
-		cout << COMMAND_OPEN_MSGBOX << "- view your messages" << endl;
-		cout << COMMAND_SEND_MSG << " - send a message for another user" << endl;
-		cout << COMMAND_GCHAT << " - open global chat" << endl;
-		cout << COMMAND_NICK << " - change your nickname settings" << endl;
-		cout << COMMAND_CHANGE_PASS << " - change your account's password" << endl;
-		cout << COMMAND_DISCONNECT << " - disconnect from your account" << endl;
-		cout << COMMAND_DELETE_ACCOUNT << "- permanently delete your account" << endl;
-		cout << string(20, '=') << "SYSTEM COMMANDS" << string(20, '=') << endl;
+		cout << "Welcome, " << Welcome() << '!' << endl;
+
+		if ((*iter)->IsAdmin())
+		{
+			cout << "@ADMIN" << endl;
+		}
+
+		cout << string(20, '=') << "MY ACCOUNT" << string(20, '=') << endl;
+		cout << ACCOUNT_OPEN_MSGBOX << "- view your messages" << endl;
+		cout << ACCOUNT_SEND_MSG << " - send a message for another user" << endl;
+		cout << ACCOUNT_GCHAT << " - open global chat" << endl;
+		cout << ACCOUNT_NICK << " - change your nickname settings" << endl;
+		cout << ACCOUNT_CHANGE_PASS << " - change your account's password" << endl;
+		cout << DISCONNECT << " - disconnect from your account" << endl;
+		cout << ACCOUNT_DELETE_ACCOUNT << "- permanently delete your account" << endl;
+
+		if ((*iter)->IsAdmin())
+		{
+			cout << ADMIN_MENU << " - Manage the system and user accounts ( Admins only )" << endl;
+		}
+
+		cout << string(20, '=') << "MY ACCOUNT" << string(20, '=') << endl;
 
 		if (!tmptr.empty())
 		{
@@ -127,35 +167,42 @@ void PHandler::AccMenu()
 		cout << "|> ";
 		cin >> input1;
 
-		if (input1 == COMMAND_NICK)
+		if (input1 == ACCOUNT_NICK)
 		{
 			NicknameConfig();
 		}
-		else if (input1 == COMMAND_CHANGE_PASS)
+		else if (input1 == ACCOUNT_CHANGE_PASS)
 		{
 			ChangePassword();
 		}
-		else if (input1 == COMMAND_DISCONNECT)
+		else if (input1 == DISCONNECT)
 		{
 			cout << "You have disconnected from your account." << endl;
 			ScrFriz();
 			return;
 		}
-		else if (input1 == COMMAND_DELETE_ACCOUNT)
+		else if (input1 == ACCOUNT_DELETE_ACCOUNT)
 		{
 			DeleteAccount();
 		}
-		else if (input1 == COMMAND_SEND_MSG)
+		else if (input1 == ACCOUNT_SEND_MSG)
 		{
 			SendMsg();
 		}
-		else if (input1 == COMMAND_OPEN_MSGBOX)
+		else if (input1 == ACCOUNT_OPEN_MSGBOX)
 		{
 			OpenMsgBox(tmptr);
 		}
-		else if (input1 == COMMAND_GCHAT)
+		else if (input1 == ACCOUNT_GCHAT)
 		{
 			GlobalChat();
+		}
+		else if ((*iter)->IsAdmin())
+		{
+			if (input1 == ADMIN_MENU)
+			{
+				AdMenu();
+			}
 		}
 		else
 		{
@@ -168,14 +215,14 @@ void PHandler::AccMenu()
 	return;
 }
 
-const string_view PHandler::WelcomeUser() const
+const string_view PHandler::Welcome() const
 {
-	switch (iter->GetCallSetting())
+	switch ((*iter)->GetCallSetting())
 	{
 		default: case CallSettings::BY_USERNAME:
-			return iter->GetData(DataType::USERNAME);
+			return (*iter)->GetData(DataType::USERNAME);
 		case CallSettings::BY_NICKNAME:
-			return iter->GetData(DataType::NICKNAME);
+			return (*iter)->GetData(DataType::NICKNAME);
 	}
 }
 
@@ -185,7 +232,7 @@ void PHandler::SendMsg()
 	cout << "|> ";
 	cin >> input1;
 
-	for (auto iter2 = AccList.begin(); iter2 != AccList.end(); ++iter2)
+	for (auto& iter2 : AccList)
 	{
 		if (iter2->FindAcc(input1))
 		{
@@ -201,7 +248,7 @@ void PHandler::SendMsg()
 
 			if (!input1.empty() && !input2.empty())
 			{
-				string_view input3 { iter->GetData(DataType::USERNAME) };
+				string_view input3 { (*iter)->GetData(DataType::USERNAME) };
 				Message tmp(input3, input2, input1);
 				iter2->InsertMessage(tmp);
 				return;
@@ -277,7 +324,7 @@ void PHandler::GlobalChat()
 		InputWithSpaces(input1);
 		cout << input1;
 
-		Gchat.push_back(Message(iter->GetData(DataType::USERNAME), input1));
+		Gchat.push_back(Message((*iter)->GetData(DataType::USERNAME), input1));
 
 		cout << "Message sent successfuly to the global chat" << endl;
 		ScrFriz();
@@ -302,7 +349,7 @@ void PHandler::ChangePassword()
 	cout << "|> ";
 	cin >> input1;
 
-	if (input1 != iter->GetData(DataType::PASSWORD))
+	if (input1 != (*iter)->GetData(DataType::PASSWORD))
 	{
 		ErrHandler(ErrType::WRONG_PASSWORD);
 		return;
@@ -337,7 +384,7 @@ void PHandler::ChangePassword()
 
 	if (input3 == input2)
 	{
-		iter->SetPassword(input2);
+		(*iter)->SetPassword(input2);
 		cout << "Your password had been updated." << endl;
 		ScrFriz();
 	}
@@ -353,7 +400,7 @@ void PHandler::NicknameConfig()
 	ClrScr();
 	cout << string(10, '-') << "NICKNAME SETTINGS" << string(10, '-') << endl;
 
-	if (iter->IsNicknameEmpty())
+	if ((*iter)->IsNicknameEmpty())
 	{
 		cout << "Choose your nickname: " << endl;
 		cout << "|> ";
@@ -365,7 +412,7 @@ void PHandler::NicknameConfig()
 
 		if (input2 == CONFIRM)
 		{
-			iter->SetNickname(input1);
+			(*iter)->SetNickname(input1);
 			NicknameControl();
 		}
 		else
@@ -383,7 +430,7 @@ void PHandler::NicknameConfig()
 void PHandler::NicknameControl()
 {
 	unsigned short temp;
-	cout << "Hi, " << WelcomeUser() << '!' << endl;
+	cout << "Hi, " << Welcome() << '!' << endl;
 	cout << "Your nickname is already set." << endl;
 	cout << "Do you want to call you by your name ( default ) or by your nickname?" << endl;
 	cout << "1 - By Name ( Default )" << endl;
@@ -394,11 +441,11 @@ void PHandler::NicknameControl()
 
 	if (temp == 1)
 	{
-		iter->SetCallSetting(CallSettings::BY_USERNAME);
+		(*iter)->SetCallSetting(CallSettings::BY_USERNAME);
 	}
 	else
 	{
-		iter->SetCallSetting(CallSettings::BY_NICKNAME);
+		(*iter)->SetCallSetting(CallSettings::BY_NICKNAME);
 	}
 
 	ScrFriz();
@@ -425,4 +472,64 @@ void PHandler::DeleteAccount()
 		cout << "Account deletion cancelled. no changes occurred." << endl;
 		ScrFriz();
 	}
+}
+
+void PHandler::AdMenu()
+{
+	do
+	{
+		ClrScr();
+		cout << string(20, '=') << "SYSTEM ADMINISTRATOR MENU" << string(20, '=') << endl;
+		cout << "Welcome, @ADMIN " << Welcome() << '!' << endl;
+		cout << ADMIN_GET_USERLIST << " - Get a list of all users in the system" << '!' << endl;
+		cout << ADMIN_GET_USERDATA << " - Get login information to log into every account" << '!' << endl;
+		cout << DISCONNECT << " - disconnect from menu" << endl;
+
+		cout << string(20, '=') << "SYSTEM ADMINISTRATOR MENU" << string(20, '=') << endl;
+		cin >> input1;
+
+		if (input1 == ADMIN_GET_USERLIST)
+		{
+			AdGetUserList();
+		}
+		else if (input1 == ADMIN_GET_USERDATA)
+		{
+			AdGetUserData();
+		}
+		else if (input1 == DISCONNECT)
+		{
+			return;
+		}
+		else
+		{
+			ErrHandler(ErrType::INVALID_CHOICE);
+		}
+	} while (true);
+}
+
+void PHandler::AdGetUserList()
+{
+	ClrScr();
+	cout << "-------USERS-------" << endl;
+
+	for (auto& v : AccList)
+	{
+		cout << v->GetData(DataType::USERNAME);
+
+		if (v->GetData(DataType::USERNAME) == (*iter)->GetData(DataType::USERNAME))
+		{
+			cout << " (This account)";
+		}
+
+		cout << endl;
+	}
+	cout << "-------USERS-------" << endl;
+	ScrFriz();
+}
+
+void PHandler::AdGetUserData()
+{
+	ClrScr();
+	cout << "This functionality is not yet available" << endl;
+	ScrFriz();
 }
