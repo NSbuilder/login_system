@@ -13,6 +13,7 @@
   <ItemGroup>
     <ClCompile Include="src\Account.cpp" />
     <ClCompile Include="src\AccountManager.cpp" />
+    <ClCompile Include="src\Admin.cpp" />
     <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Message.cpp" />
@@ -20,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="src\Account.h" />
     <ClInclude Include="src\AccountManager.h" />
+    <ClInclude Include="src\Admin.h" />
     <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\Message.h" />
   </ItemGroup>
@@ -74,7 +76,11 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>
+      </DisableLanguageExtensions>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <TreatWarningAsError>false</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -95,7 +101,13 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <DisableLanguageExtensions>true</DisableLanguageExtensions>
+      <DisableLanguageExtensions>
+      </DisableLanguageExtensions>
+      <DebugInformationFormat>None</DebugInformationFormat>
+      <CompileAsManaged>false</CompileAsManaged>
+      <CompileAsWinRT>false</CompileAsWinRT>
+      <TreatWarningAsError>false</TreatWarningAsError>
+      <FavorSizeOrSpeed>Speed</FavorSizeOrSpeed>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>

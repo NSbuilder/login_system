@@ -1,14 +1,17 @@
 #include "Account.h"
+#include "Helper.h"
 
 Account::Account(string_view input1, string_view input2)
 {
 	m_username = input1;
 	m_password = input2;
 	m_callSetting = CallSettings::BY_USERNAME;
+	accCounter++;
 }
 
 Account::~Account()
 {
+	accCounter--;
 }
 
 const string_view Account::GetData(DataType ThisDataType) const
@@ -55,6 +58,11 @@ const CallSettings Account::GetCallSetting() const
 	return m_callSetting;
 }
 
+const bool Account::IsAdmin() const
+{
+	return isAdmin;
+}
+
 void Account::SetPassword(string_view input2)
 {
 	m_password = input2;
@@ -94,4 +102,11 @@ void Account::InsertMessage(Message& msg)
 queue<Message>& Account::GetMessages()
 {
 	return m_MessageBox;
+}
+
+unsigned Account::accCounter = 0;
+
+const unsigned Account::HowManyAccounts()
+{
+	return accCounter;
 }

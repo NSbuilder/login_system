@@ -5,7 +5,6 @@ int main()
 	bool terminate = false;
 	unsigned short choice;
 	PHandler System;
-	//System.Gchat.reserve(51);
 	
 	do
 	{

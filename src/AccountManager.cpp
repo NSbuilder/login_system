@@ -3,7 +3,7 @@
 PHandler::PHandler()
 {
 	accExist = true;
-	Gchat.reserve(50);
+	Gchat.reserve(51);
 }
 
 PHandler::~PHandler()
