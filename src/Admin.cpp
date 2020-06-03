@@ -1,6 +1,6 @@
 #include "Admin.h"
 
-Admin::Admin(string_view input1, string_view input2) : Account(input1, input2)
+Admin::Admin(string_view input1, string& input2) : Account(input1, input2)
 {
 	isAdmin = true;
 	adminCounter++;

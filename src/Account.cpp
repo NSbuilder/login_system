@@ -1,10 +1,11 @@
 #include "Account.h"
 #include "Helper.h"
 
-Account::Account(string_view input1, string_view input2)
+Account::Account(string_view input1, string& input2)
 {
+	hash<string> hasher;
 	m_username = input1;
-	m_password = input2;
+	hashedPassword = hasher(input2);
 	m_callSetting = CallSettings::BY_USERNAME;
 	accCounter++;
 }
@@ -14,16 +15,27 @@ Account::~Account()
 	accCounter--;
 }
 
+bool Account::TryLogin(string_view input1, string& input2 )
+{
+	hash<string> hasher;
+	size_t hashedTry {hasher(input2)};
+
+	if (input1 == m_username && hashedTry == hashedPassword )
+		return true;
+	
+	return false;
+}
+
 const string_view Account::GetData(DataType ThisDataType) const
 {
 	switch (ThisDataType)
 	{
-	default:case DataType::USERNAME: //
-			return m_username;
-		case DataType::PASSWORD:
-			return m_password;
-		case DataType::NICKNAME:
-			return m_nickname;
+	case DataType::USERNAME:
+		return m_username;
+	case DataType::NICKNAME:
+		return m_nickname;
+	default:
+		ErrHandler(ErrType::INVALID_CHOICE);
 	}
 }
 
@@ -37,14 +49,20 @@ const bool Account::FindAcc(string_view input1) const
 	return false;
 }
 
-const bool Account::CheckLogin(string_view input2) const
+const bool Account::ValidateLogin(string& input2)
 {
-	if (m_password == input2)
+	size_t hashedTry;
+	hash<string> hasher;
+	hashedTry = hasher(input2);
+
+	if (hashedPassword == hashedTry)
 	{
 		return true;
 	}
-	
-	return false;
+	else
+	{
+		return false;
+	}
 
 }
 
@@ -65,7 +83,8 @@ const bool Account::IsAdmin() const
 
 void Account::SetPassword(string_view input2)
 {
-	m_password = input2;
+	hash<string> hasher;
+	hashedPassword = hasher(static_cast<string>(input2));
 }
 
 void Account::SetNickname(string_view input1)

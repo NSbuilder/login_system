@@ -10,13 +10,15 @@ PHandler::~PHandler()
 {
 }
 
-void PHandler::About()
+
+void PHandler::AboutProgram()
 {
 	ClrScr();
 	cout << string(10, '-') << endl << endl << "This program was made by Noam Sarusi ( NSbuilder )" << endl << endl;
 	cout << string(10, '-') << endl << endl << "To stay updated, head to: github.com/NSbuilder/login_system" << endl << endl;
 	ScrFriz();
 }
+
 
 void PHandler::CreateAccount()
 {
@@ -26,13 +28,10 @@ void PHandler::CreateAccount()
 	cout << "|> ";
 	cin >> input1;
 
-	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
+	if (IsThatUsernameTaken(input1))
 	{
-		if ((*iter)->GetData(DataType::USERNAME) == input1)
-		{
-			ErrHandler(ErrType::TAKEN_USERNAME);
-			return;
-		}
+		ErrHandler(ErrType::TAKEN_USERNAME);
+		return;
 	}
 
 	cout << "Choose a password: " << endl;
@@ -44,7 +43,8 @@ void PHandler::CreateAccount()
 		ErrHandler(ErrType::PASSWORD_LENGTH);
 
 		ClrScr();
-		cout << "To cancle the account creation, type " << CANCLE << "." << endl;
+		cout << string(10, '=') << "CREATE NEW ACCOUNT" << string(10, '=') << endl;
+		cout << "To cancle, type " << CANCLE << "." << endl;
 		cout << "To continue, choose a valid password." << endl;
 		cout << "|> ";
 		cin >> input2;
@@ -54,9 +54,6 @@ void PHandler::CreateAccount()
 			cout << "the operation had been cancelled by the user." << endl;
 			return;
 		}
-
-		continue;
-
 	}
 	
 	string input3;
@@ -65,30 +62,24 @@ void PHandler::CreateAccount()
 	cout << "Do you want this account to be an admin? (yes/no) " << endl;
 	cin >> input3;
 
-	if (input3 != "yes" && input3 != "no")
+	if (input3 == "yes")
 	{
-		ErrHandler(ErrType::INVALID_CHOICE);
-		return;
-	}
-	else if (input3 != "yes")
-	{
-		AccList.push_front(make_unique<Account>(input1, input2));
-		ScrFriz();
-	}
-	else
-	{
-		if (Admin::HowManyAdmins())
-		{
-			cout << "It is currently possible to create only 1 admin account." << endl;
-			cout << "A regular account will be created." << endl;
-			AccList.push_front(make_unique<Account>(input1, input2));
-		}
-		else
+		if (!Admin::HowManyAdmins())
 		{
 			AccList.push_front(make_unique<Admin>(input1, input2));
 			ScrFriz();
+			return;
+		}
+		else
+		{
+			cout << "There is already one admin. It is currently possible to create only 1 admin account." << endl;
 		}
 	}
+
+	cout << "A regular account will be created." << endl;
+	AccList.push_front(make_unique<Account>(input1, input2));
+	ScrFriz();
+
 }
 
 void PHandler::Login()
@@ -98,36 +89,12 @@ void PHandler::Login()
 	cout << "Enter your username: " << endl;
 	cout << "|> ";
 	cin >> input1;
-	prevIter = AccList.before_begin();
-
-	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
-	{
-
-		if ((*iter)->FindAcc(input1))
-		{
-			cout << "Enter your password: " << endl;
-			cout << "|> ";
-			cin >> input2;
-
-			if ((*iter)->CheckLogin(input2))
-			{
-				AccMenu();
-				return;
-			}
-
-			ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
-			return;
-		}
-
-		prevIter++;
-
-	}
 
 	cout << "Enter your password: " << endl;
 	cout << "|> ";
 	cin >> input2;
 
-	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
+	Authentication(input1, input2);
 }
 
 void PHandler::AccMenu()
@@ -215,6 +182,36 @@ void PHandler::AccMenu()
 	return;
 }
 
+bool PHandler::IsThatUsernameTaken(string_view input1)
+{
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
+	{
+		if ((*iter)->GetData(DataType::USERNAME) == input1)
+		{
+			return true;
+		}
+	}
+	return false;
+}
+
+void PHandler::Authentication(string_view input1, string& input2)
+{
+	prevIter = AccList.before_begin();
+	
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
+	{
+		if ((*iter)->TryLogin(input1, input2))
+		{
+			AccMenu();
+			return;
+		}
+		prevIter++;
+	}
+
+	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
+	cout << "wrong details" << endl;
+}
+
 const string_view PHandler::Welcome() const
 {
 	switch ((*iter)->GetCallSetting())
@@ -225,6 +222,7 @@ const string_view PHandler::Welcome() const
 			return (*iter)->GetData(DataType::NICKNAME);
 	}
 }
+
 
 void PHandler::SendMsg()
 {
@@ -321,7 +319,7 @@ void PHandler::GlobalChat()
 
 
 		cout << "Enter message:" << endl;
-		InputWithSpaces(input1);
+		SInput(input1);
 		cout << input1;
 
 		Gchat.push_back(Message((*iter)->GetData(DataType::USERNAME), input1));
@@ -349,7 +347,7 @@ void PHandler::ChangePassword()
 	cout << "|> ";
 	cin >> input1;
 
-	if (input1 != (*iter)->GetData(DataType::PASSWORD))
+	if (!(*iter)->ValidateLogin(input1))
 	{
 		ErrHandler(ErrType::WRONG_PASSWORD);
 		return;
@@ -437,7 +435,7 @@ void PHandler::NicknameControl()
 	cout << "2 - By Nickname" << endl;
 	cout << "|> ";
 
-	IntPut(temp);
+	SInput(temp);
 
 	if (temp == 1)
 	{
@@ -473,6 +471,7 @@ void PHandler::DeleteAccount()
 		ScrFriz();
 	}
 }
+
 
 void PHandler::AdMenu()
 {
@@ -530,6 +529,6 @@ void PHandler::AdGetUserList()
 void PHandler::AdGetUserData()
 {
 	ClrScr();
-	cout << "This functionality is not yet available" << endl;
+	cout << "This functionality is privacy invadious and insecure. It will be removed soon" << endl;
 	ScrFriz();
 }

@@ -9,7 +9,7 @@ int main()
 	do
 	{
 		ClrScr();
-		cout << string(43, '-') << "MADE BY Noam Sarusi ( NSbuilder )" << string(43, '-') << endl << endl;
+		cout << string(43, '-') << "MADE BY Noam Sarusi (NSbuilder)" << string(43, '-') << endl << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "1 - Create new account" << endl;
 		cout << "2 - Login to an existing account" << endl;
@@ -18,7 +18,7 @@ int main()
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "|> ";
 
-		IntPut(choice);
+		SInput(choice);
 
 		switch (choice)
 		{
@@ -29,7 +29,7 @@ int main()
 				System.Login();
 				break;
 			case 3:
-				System.About();
+				System.AboutProgram();
 				break;
 			case 4:
 				terminate = true;

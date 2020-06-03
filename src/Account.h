@@ -1,6 +1,7 @@
 #pragma once
 #include "Message.h"
 #include <queue>
+#include <functional>
 
 enum class CallSettings
 {
@@ -9,18 +10,21 @@ enum class CallSettings
 
 enum class DataType
 {
-	USERNAME, PASSWORD, NICKNAME
+	USERNAME, NICKNAME
 };
 
 class Account
 {
 public:
-	Account(string_view input1, string_view input2);
+	Account(string_view input1, string& input2);
 	~Account();
 
+	bool TryLogin(string_view input1, string& input2);
 	const string_view GetData(DataType ThisDataType) const;
 	const bool FindAcc(string_view input1) const;
-	const bool CheckLogin(string_view input2) const;
+
+	const bool ValidateLogin(string& input2);
+
 	const bool IsNicknameEmpty() const;
 	const CallSettings GetCallSetting() const;
 	const bool IsAdmin() const;
@@ -36,10 +40,9 @@ public:
 
 protected:
 	queue<Message> m_MessageBox;
-
 	string m_username;
-	string m_password;
 	string m_nickname;
+	size_t hashedPassword;
 
 	CallSettings m_callSetting;
 
