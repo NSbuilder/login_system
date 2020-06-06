@@ -6,7 +6,6 @@ void ClrScr()
 	system("cls");
 #else
 	system("clear");
-
 #endif
 }
 
@@ -29,9 +28,10 @@ void SInput(unsigned short& choice)
 	}
 }
 
-void SInput(string& input)
+void SInput(string& input, bool cinIgnore)
 {
-	cin.ignore(numeric_limits<streamsize>::max(), '\n');
+	if (cinIgnore)
+		cin.ignore(numeric_limits<streamsize>::max(), '\n');
 	getline(cin, input);
 }
 

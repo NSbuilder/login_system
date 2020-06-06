@@ -39,7 +39,7 @@ const string_view Account::GetData(DataType ThisDataType) const
 	}
 }
 
-const bool Account::FindAcc(string_view input1) const
+const bool Account::GetUsername(string_view input1) const
 {
 	if (m_username == input1)
 	{

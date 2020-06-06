@@ -14,10 +14,9 @@ public:
 	void AboutProgram();
 
 	void CreateAccount();
-	bool IsThatUsernameTaken(string_view input1);
+	bool IsThatUsernameTaken(string_view username);
 
 	void Login();
-	void Authentication(string_view input1, string& input2);
 
 	void AccMenu();
 	const string_view Welcome() const;

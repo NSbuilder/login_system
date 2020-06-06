@@ -6,7 +6,7 @@ int main()
 	unsigned short choice;
 	PHandler System;
 	
-	do
+	while (!terminate)
 	{
 		ClrScr();
 		cout << string(43, '-') << "MADE BY Noam Sarusi (NSbuilder)" << string(43, '-') << endl << endl;
@@ -39,8 +39,7 @@ int main()
 				break;
 		}
 
-	} 
-	while (!terminate);
+	}
 
 	return 0;
 }

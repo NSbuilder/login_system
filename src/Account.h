@@ -21,7 +21,7 @@ public:
 
 	bool TryLogin(string_view input1, string& input2);
 	const string_view GetData(DataType ThisDataType) const;
-	const bool FindAcc(string_view input1) const;
+	const bool GetUsername(string_view input1) const;
 
 	const bool ValidateLogin(string& input2);
 

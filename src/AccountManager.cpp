@@ -94,12 +94,26 @@ void PHandler::Login()
 	cout << "|> ";
 	cin >> input2;
 
-	Authentication(input1, input2);
+	prevIter = AccList.before_begin();
+
+	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
+	{
+		if ((*iter)->TryLogin(input1, input2))
+		{
+			AccMenu();
+			return;
+		}
+		prevIter++;
+	}
+
+	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
+	cout << "wrong details" << endl;
 }
 
 void PHandler::AccMenu()
 {
 	auto& tmptr = (*iter)->GetMessages();
+
 	while (accExist)
 	{
 		ClrScr();
@@ -182,34 +196,16 @@ void PHandler::AccMenu()
 	return;
 }
 
-bool PHandler::IsThatUsernameTaken(string_view input1)
+bool PHandler::IsThatUsernameTaken(string_view username)
 {
 	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
-		if ((*iter)->GetData(DataType::USERNAME) == input1)
+		if ((*iter)->GetData(DataType::USERNAME) == username)
 		{
 			return true;
 		}
 	}
 	return false;
-}
-
-void PHandler::Authentication(string_view input1, string& input2)
-{
-	prevIter = AccList.before_begin();
-	
-	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
-	{
-		if ((*iter)->TryLogin(input1, input2))
-		{
-			AccMenu();
-			return;
-		}
-		prevIter++;
-	}
-
-	ErrHandler(ErrType::ACCOUNT_NOT_FOUND);
-	cout << "wrong details" << endl;
 }
 
 const string_view PHandler::Welcome() const
@@ -232,17 +228,14 @@ void PHandler::SendMsg()
 
 	for (auto& iter2 : AccList)
 	{
-		if (iter2->FindAcc(input1))
+		if (iter2->GetUsername(input1))
 		{
 			cout << "Enter messsage topic:" << endl;
 			cout << "|> ";
-
-			cin.ignore(numeric_limits<streamsize>::max(), '\n');
-
-			getline(cin, input1);
+			SInput(input1);
 			cout << "Enter messsage:" << endl;
 			cout << "|> ";
-			getline(cin, input2);
+			SInput(input2, 0);
 
 			if (!input1.empty() && !input2.empty())
 			{
