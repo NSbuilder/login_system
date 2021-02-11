@@ -3,7 +3,7 @@
 #include <queue>
 #include <functional>
 
-enum class CallSettings
+enum class NamePreferences
 {
 	BY_USERNAME = 1, BY_NICKNAME
 };
@@ -26,12 +26,12 @@ public:
 	const bool ValidateLogin(string& input2);
 
 	const bool IsNicknameEmpty() const;
-	const CallSettings GetCallSetting() const;
+	const NamePreferences GetCallSetting() const;
 	const bool IsAdmin() const;
 
 	void SetPassword(string_view input2);
 	void SetNickname(string_view input1);
-	void SetCallSetting(CallSettings temp);
+	void SetCallSetting(NamePreferences temp);
 	void InsertMessage(Message& msg);
 
 	const static unsigned HowManyAccounts();
@@ -44,7 +44,7 @@ protected:
 	string m_nickname;
 	size_t hashedPassword;
 
-	CallSettings m_callSetting;
+	NamePreferences m_callSetting;
 
 	static unsigned accCounter;
 

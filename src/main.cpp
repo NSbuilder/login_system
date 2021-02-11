@@ -2,11 +2,10 @@
 
 int main()
 {
-	bool terminate = false;
-	unsigned short choice;
 	PHandler System;
+	unsigned short choice;
 	
-	while (!terminate)
+	while (true)
 	{
 		ClrScr();
 		cout << string(43, '-') << "MADE BY Noam Sarusi (NSbuilder)" << string(43, '-') << endl << endl;
@@ -32,14 +31,10 @@ int main()
 				System.AboutProgram();
 				break;
 			case 4:
-				terminate = true;
-				break;
+				return 0;
 			default:
 				ErrHandler(ErrType::INVALID_CHOICE);
 				break;
 		}
-
 	}
-
-	return 0;
 }

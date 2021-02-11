@@ -8,9 +8,9 @@ void ClrScr(); // Clear the screen
 
 void ScrFriz(); // Wait for input
 
-void SInput(unsigned short& choice); //Receive input to integer and prevent errors
+void SInput(unsigned short& choice); //Receive input as integer and prevent errors
 
-void SInput(string& input, bool ignore = true); //Receive input that contain spaces
+void SInput(string& input, bool ignore = true); //Deals with receiving inputs that contain spaces
 
 enum class ErrType
 {

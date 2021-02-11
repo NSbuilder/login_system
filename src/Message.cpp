@@ -11,7 +11,7 @@ Message::~Message()
 {
 }
 
-const string_view Message::GetMSender() const
+const string_view Message::GetMsgSender() const
 {
 	return m_sender;
 }
@@ -21,7 +21,7 @@ const string_view Message::GetMTopic() const
 	return m_topic;
 }
 
-const string_view Message::GetM() const
+const string_view Message::GetMsg() const
 {
 	return m_message;
 }

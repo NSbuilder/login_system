@@ -28,9 +28,9 @@ public:
 	void NicknameControl();
 	void DeleteAccount();
 
-	void AdMenu();
-	void AdGetUserList();
-	void AdGetUserData();
+	void AdminMenu();
+	void AdminGetUserList();
+	void AdminGetUserData();
 	
 
 private:

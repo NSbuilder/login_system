@@ -59,7 +59,7 @@ void PHandler::CreateAccount()
 	string input3;
 
 	ClrScr();
-	cout << "Do you want this account to be an admin? (yes/no) " << endl;
+	cout << "Do you want this account to be have admin privileges? (yes/no) " << endl;
 	cin >> input3;
 
 	if (input3 == "yes")
@@ -72,11 +72,11 @@ void PHandler::CreateAccount()
 		}
 		else
 		{
-			cout << "There is already one admin. It is currently possible to create only 1 admin account." << endl;
+			cout << "There is already one admin. It is currently possible to create only 1 account with admin privileges." << endl;
 		}
 	}
 
-	cout << "A regular account will be created." << endl;
+	cout << "A new user account will be created." << endl;
 	AccList.push_front(make_unique<Account>(input1, input2));
 	ScrFriz();
 
@@ -182,7 +182,7 @@ void PHandler::AccMenu()
 		{
 			if (input1 == ADMIN_MENU)
 			{
-				AdMenu();
+				AdminMenu();
 			}
 		}
 		else
@@ -205,6 +205,7 @@ bool PHandler::IsThatUsernameTaken(string_view username)
 			return true;
 		}
 	}
+
 	return false;
 }
 
@@ -212,9 +213,9 @@ const string_view PHandler::Welcome() const
 {
 	switch ((*iter)->GetCallSetting())
 	{
-		default: case CallSettings::BY_USERNAME:
+		default: case NamePreferences::BY_USERNAME:
 			return (*iter)->GetData(DataType::USERNAME);
-		case CallSettings::BY_NICKNAME:
+		case NamePreferences::BY_NICKNAME:
 			return (*iter)->GetData(DataType::NICKNAME);
 	}
 }
@@ -222,7 +223,7 @@ const string_view PHandler::Welcome() const
 
 void PHandler::SendMsg()
 {
-	cout << "Which user do you want to send the message? Please write the username percisely" << endl;
+	cout << "Which user do you want to send the message? Please write the username precisely" << endl;
 	cout << "|> ";
 	cin >> input1;
 
@@ -267,9 +268,9 @@ void PHandler::OpenMsgBox(queue<Message>& tmptr)
 		cout << "You will now review your messages from the oldest to the newest. Every message you see will get deleted immidiately afterwards." << endl << endl;
 
 		cout << "-------------------------------------" << endl;
-		cout << "Sender: " << tmptr.front().GetMSender() << endl << endl << endl;
+		cout << "Sender: " << tmptr.front().GetMsgSender() << endl << endl << endl;
 		cout << "Topic: " << tmptr.front().GetMTopic() << endl << endl << endl;
-		cout << "Message: " << tmptr.front().GetM() << endl << endl << endl;
+		cout << "Message: " << tmptr.front().GetMsg() << endl << endl << endl;
 		cout << "-------------------------------------" << endl;
 		tmptr.pop();
 
@@ -300,34 +301,42 @@ void PHandler::GlobalChat()
 {
 	do
 	{
+		ClrScr();
+		cout << "**********Global Chat**********" << endl;
+
 		for (auto& tmpItr : Gchat)
 		{
-			cout << tmpItr.GetMSender() << ": " << tmpItr.GetM() << endl << endl;
+			cout << tmpItr.GetMsgSender() << ": " << tmpItr.GetMsg() << endl << endl;
 		}
+
+		cout << "**********Global Chat**********" << endl;
+
 
 		if (Gchat.size() == 50)
 		{
 			Gchat.erase(Gchat.begin());
 		}
 
+		cout << endl << "To write a message type \"write\". To exit, type \"exit\"" << endl;
+		cin >> input1;
 
-		cout << "Enter message:" << endl;
-		SInput(input1);
-		cout << input1;
-
-		Gchat.push_back(Message((*iter)->GetData(DataType::USERNAME), input1));
-
-		cout << "Message sent successfuly to the global chat" << endl;
-		ScrFriz();
-		string input4;
-		cout << "Exit global chat? (yes/no): ";
-		cin >> input4;
-
-		if ((input4) != "yes")
+		if (input1 == "write")
+		{
+			cout << "Enter message:" << endl;
+			SInput(input1);
+			Gchat.push_back(Message((*iter)->GetData(DataType::USERNAME), input1));
+		}
+		else if (input1 == "exit")
 		{
 			return;
 		}
+		else
+		{
+			ErrHandler(ErrType::INVALID_CHOICE);
+			continue;
+		}
 
+		//ScrFriz();
 	} while (true);
 }
 
@@ -432,11 +441,11 @@ void PHandler::NicknameControl()
 
 	if (temp == 1)
 	{
-		(*iter)->SetCallSetting(CallSettings::BY_USERNAME);
+		(*iter)->SetCallSetting(NamePreferences::BY_USERNAME);
 	}
 	else
 	{
-		(*iter)->SetCallSetting(CallSettings::BY_NICKNAME);
+		(*iter)->SetCallSetting(NamePreferences::BY_NICKNAME);
 	}
 
 	ScrFriz();
@@ -466,7 +475,7 @@ void PHandler::DeleteAccount()
 }
 
 
-void PHandler::AdMenu()
+void PHandler::AdminMenu()
 {
 	do
 	{
@@ -482,11 +491,11 @@ void PHandler::AdMenu()
 
 		if (input1 == ADMIN_GET_USERLIST)
 		{
-			AdGetUserList();
+			AdminGetUserList();
 		}
 		else if (input1 == ADMIN_GET_USERDATA)
 		{
-			AdGetUserData();
+			AdminGetUserData();
 		}
 		else if (input1 == DISCONNECT)
 		{
@@ -499,7 +508,7 @@ void PHandler::AdMenu()
 	} while (true);
 }
 
-void PHandler::AdGetUserList()
+void PHandler::AdminGetUserList()
 {
 	ClrScr();
 	cout << "-------USERS-------" << endl;
@@ -519,7 +528,7 @@ void PHandler::AdGetUserList()
 	ScrFriz();
 }
 
-void PHandler::AdGetUserData()
+void PHandler::AdminGetUserData()
 {
 	ClrScr();
 	cout << "This functionality is privacy invadious and insecure. It will be removed soon" << endl;

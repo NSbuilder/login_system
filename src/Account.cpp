@@ -6,7 +6,7 @@ Account::Account(string_view input1, string& input2)
 	hash<string> hasher;
 	m_username = input1;
 	hashedPassword = hasher(input2);
-	m_callSetting = CallSettings::BY_USERNAME;
+	m_callSetting = NamePreferences::BY_USERNAME;
 	accCounter++;
 }
 
@@ -71,7 +71,7 @@ const bool Account::IsNicknameEmpty() const
 	return m_nickname.empty();
 }
 
-const CallSettings Account::GetCallSetting() const
+const NamePreferences Account::GetCallSetting() const
 {
 	return m_callSetting;
 }
@@ -92,16 +92,16 @@ void Account::SetNickname(string_view input1)
 	m_nickname = input1;
 }
 
-void Account::SetCallSetting(CallSettings temp)
+void Account::SetCallSetting(NamePreferences temp)
 {
 	switch (temp)
 	{
-		case CallSettings::BY_USERNAME:
-			m_callSetting = CallSettings::BY_USERNAME;
+		case NamePreferences::BY_USERNAME:
+			m_callSetting = NamePreferences::BY_USERNAME;
 			cout << "You will be called by your name." << endl;
 			break;
-		case CallSettings::BY_NICKNAME:
-			m_callSetting = CallSettings::BY_NICKNAME;
+		case NamePreferences::BY_NICKNAME:
+			m_callSetting = NamePreferences::BY_NICKNAME;
 			cout << "You will be called by your nickname." << endl;
 			break;
 		default:
