@@ -17,6 +17,7 @@
     <ClCompile Include="src\Helper.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\Message.cpp" />
+    <ClCompile Include="src\Note.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Account.h" />
@@ -24,6 +25,7 @@
     <ClInclude Include="src\Admin.h" />
     <ClInclude Include="src\Helper.h" />
     <ClInclude Include="src\Message.h" />
+    <ClInclude Include="src\Note.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

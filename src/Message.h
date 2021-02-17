@@ -1,8 +1,5 @@
 #pragma once
-#include <string>
-#include <string_view>
-
-using namespace std;
+#include "Note.h"
 
 class Message
 {

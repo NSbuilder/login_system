@@ -5,6 +5,8 @@
 #include <forward_list>
 #include <memory>
 
+//class Account;
+
 class PHandler final
 {
 public:
@@ -22,6 +24,7 @@ public:
 	const string_view Welcome() const;
 	void SendMsg();
 	void OpenMsgBox(queue<Message>& tmptr);
+	void MyNotes();
 	void GlobalChat();
 	void ChangePassword();
 	void NicknameConfig();
@@ -49,6 +52,7 @@ private:
 	static constexpr string_view ACCOUNT_CHANGE_PASS { "/changepass" };
 	static constexpr string_view ACCOUNT_NICK { "/nickname" };
 	static constexpr string_view ACCOUNT_GCHAT { "/gchat" };
+	static constexpr string_view ACCOUNT_NOTES { "/mnotes" };
 
 	static constexpr string_view ACCOUNT_DELETE_ACCOUNT { "/DELETE_MY_ACCOUNT" };
 	static constexpr string_view ADMIN_MENU { "/admenu" };

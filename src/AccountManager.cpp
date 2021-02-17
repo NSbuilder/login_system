@@ -40,7 +40,7 @@ void PHandler::CreateAccount()
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrHandler(ErrType::PASSWORD_LENGTH);
+		ErrHandler(ErrType::PASSWORD_INVALID_LENGTH);
 
 		ClrScr();
 		cout << string(10, '=') << "CREATE NEW ACCOUNT" << string(10, '=') << endl;
@@ -58,15 +58,15 @@ void PHandler::CreateAccount()
 	
 	string input3;
 
-	ClrScr();
 	cout << "Do you want this account to be have admin privileges? (yes/no) " << endl;
 	cin >> input3;
 
 	if (input3 == "yes")
 	{
-		if (!Admin::HowManyAdmins())
+		if (Admin::HowManyAdmins() == 0)
 		{
 			AccList.push_front(make_unique<Admin>(input1, input2));
+			cout << "A new admin account has been created." << endl;
 			ScrFriz();
 			return;
 		}
@@ -76,8 +76,8 @@ void PHandler::CreateAccount()
 		}
 	}
 
-	cout << "A new user account will be created." << endl;
 	AccList.push_front(make_unique<Account>(input1, input2));
+	cout << "A new user account has been created." << endl;
 	ScrFriz();
 
 }
@@ -128,6 +128,7 @@ void PHandler::AccMenu()
 		cout << ACCOUNT_OPEN_MSGBOX << "- view your messages" << endl;
 		cout << ACCOUNT_SEND_MSG << " - send a message for another user" << endl;
 		cout << ACCOUNT_GCHAT << " - open global chat" << endl;
+		cout << ACCOUNT_NOTES << " - edit your personal notes" << endl;
 		cout << ACCOUNT_NICK << " - change your nickname settings" << endl;
 		cout << ACCOUNT_CHANGE_PASS << " - change your account's password" << endl;
 		cout << DISCONNECT << " - disconnect from your account" << endl;
@@ -174,6 +175,10 @@ void PHandler::AccMenu()
 		{
 			OpenMsgBox(tmptr);
 		}
+		else if (input1 == ACCOUNT_NOTES)
+		{
+			MyNotes();
+		}
 		else if (input1 == ACCOUNT_GCHAT)
 		{
 			GlobalChat();
@@ -200,7 +205,8 @@ bool PHandler::IsThatUsernameTaken(string_view username)
 {
 	for (iter = AccList.begin(); iter != AccList.end(); ++iter)
 	{
-		if ((*iter)->GetData(DataType::USERNAME) == username)
+		Account &acc = **iter;
+		if (acc.GetData(DataType::USERNAME) == username)
 		{
 			return true;
 		}
@@ -236,7 +242,7 @@ void PHandler::SendMsg()
 			SInput(input1);
 			cout << "Enter messsage:" << endl;
 			cout << "|> ";
-			SInput(input2, 0);
+			SInput(input2, false);
 
 			if (!input1.empty() && !input2.empty())
 			{
@@ -295,6 +301,129 @@ void PHandler::OpenMsgBox(queue<Message>& tmptr)
 			return;
 		}
 	} while (true);
+}
+
+void PHandler::MyNotes()
+{
+	do
+	{
+		ClrScr();
+		cout << "**********Notes**********" << endl << endl;
+		(*iter)->PrintAllNotes();
+		cout << "**********Notes**********" << endl << endl;
+
+		if ((*iter)->NoNotes())
+		{
+			cout << "No personal notes. Would you want to create some? :)" << endl;
+			cout << "Type x to edit your notes. Type exit to exit" << endl;
+		}
+		else
+		{
+			cout << "Type b to view your notes, k to delete them and x to edit them. type exit to exit." << endl;
+		}
+
+		cin >> input1;
+
+		if (input1 == "exit")
+		{
+			return;
+		}
+		else if (input1 == "x")
+		{
+			ClrScr();
+
+			if ((*iter)->NoNotes())
+			{
+				cout << "Type x to create a new note." << endl;
+			}
+			else
+			{
+				cout << "Would you like to create a new note or edit an existing one" << endl;
+				cout << "Type x for a new one, a to edit an existing one" << endl;
+			}
+
+			cin >> input1;
+
+			if (input1 == "x")
+			{
+				cout << "Choose a topic. Press enter to leave out blank" << endl << endl;
+				SInput(input1);
+				cout << endl << "Note:" << endl << endl;
+				SInput(input2, false);
+
+				Note x(input1, input2);
+
+				(*iter)->InsertNote(x);
+				
+			}
+			else if (input1 == "a" && !(*iter)->NoNotes())
+			{
+				ClrScr();
+
+				unsigned short i;
+				cout << "Choose a message to edit ( by index )." << endl;
+				SInput(i);
+
+				if ((*iter)->IsThisAGoodMessageIndex(i))
+				{
+					(*iter)->PrintNote(i);
+					cout << "Choose a new topic. Press enter to leave out blank" << endl << endl;
+					SInput(input1);
+					cout << "Note:" << endl << endl;
+					SInput(input2, false);
+
+					Note x(input1, input2);
+					(*iter)->EditNote(i, x);
+				}
+				else
+				{
+					ErrHandler(ErrType::INVALID_CHOICE);
+				}
+			}
+			else
+			{
+				ErrHandler(ErrType::INVALID_CHOICE);
+			}
+	
+		}
+		else if (input1 == "b" && !(*iter)->NoNotes())
+		{
+			unsigned short i;
+			cout << "Choose a message to view ( by index )." << endl;
+			SInput(i);
+
+			if ((*iter)->IsThisAGoodMessageIndex(i))
+			{
+				(*iter)->PrintNote(i);
+				ScrFriz();
+			}
+			else
+			{
+				ErrHandler(ErrType::INVALID_CHOICE);
+			}
+		}
+		else if (input1 == "k" && !(*iter)->NoNotes())
+		{
+			unsigned short i;
+			cout << "Choose a message to delete ( by index )." << endl;
+			SInput(i);
+
+			if ((*iter)->IsThisAGoodMessageIndex(i))
+			{
+				(*iter)->EraseNote(i);
+				ScrFriz();
+			}
+			else
+			{
+				ErrHandler(ErrType::INVALID_CHOICE);
+			}
+		}
+		else
+		{
+			ErrHandler(ErrType::INVALID_CHOICE);
+		}
+	}
+	while (true);
 }
 
 void PHandler::GlobalChat()
@@ -361,7 +490,7 @@ void PHandler::ChangePassword()
 
 	while (input2.length() < 8 || input2.length() > 32)
 	{
-		ErrHandler(ErrType::PASSWORD_LENGTH);
+		ErrHandler(ErrType::PASSWORD_INVALID_LENGTH);
 
 		cout << "To leave the password unchanged, type " << CANCLE << "." << endl;
 		cout << "To continue, choose a new valid password." << endl;

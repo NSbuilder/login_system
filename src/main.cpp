@@ -3,7 +3,7 @@
 int main()
 {
 	PHandler System;
-	unsigned short choice;
+	unsigned short userChoice;
 	
 	while (true)
 	{
@@ -13,13 +13,13 @@ int main()
 		cout << "1 - Create new account" << endl;
 		cout << "2 - Login to an existing account" << endl;
 		cout << "3 - About" << endl;
-		cout << "4 - Exit" << endl;
+		cout << "4 - Destroy all data in the system and exit program" << endl;
 		cout << string(50, '=') << "MAIN MENU" << string(50, '=') << endl;
 		cout << "|> ";
 
-		SInput(choice);
+		SInput(userChoice);
 
-		switch (choice)
+		switch (userChoice)
 		{
 			case 1:
 				System.CreateAccount();

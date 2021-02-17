@@ -51,7 +51,7 @@ void ErrHandler(ErrType errSort)
 		case ErrType::TAKEN_USERNAME:
 			cerr << "This username is already taken!" << endl;
 			break;
-		case ErrType::PASSWORD_LENGTH:
+		case ErrType::PASSWORD_INVALID_LENGTH:
 			cerr << "Your password must be at least 8 characters long and no longer than 32!" << endl;
 			break;
 		case ErrType::ACCOUNT_NOT_FOUND:

@@ -33,12 +33,24 @@ public:
 	void SetNickname(string_view input1);
 	void SetCallSetting(NamePreferences temp);
 	void InsertMessage(Message& msg);
+	void NotesSection();
+
+	bool IsThisAGoodMessageIndex(unsigned int i);
+	void PrintAllNotes();
+	void PrintNote(unsigned int i);
+	bool NoNotes();
+	void EraseNote(unsigned int i);
+
+	void InsertNote(Note& newNote);
+	void EditNote(unsigned short i, Note& editNote);
+	//Note& GetMNotes();
 
 	const static unsigned HowManyAccounts();
 
 	queue<Message>& GetMessages();
 
 protected:
+	vector<Note> m_Notes;
 	queue<Message> m_MessageBox;
 	string m_username;
 	string m_nickname;
